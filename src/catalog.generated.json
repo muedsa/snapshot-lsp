@@ -1,0 +1,1271 @@
+{
+  "Snapshot": {
+    "mode": "single",
+    "description": "**必须是根节点且整个文档只有一个**",
+    "attributes": {
+      "background": {
+        "kind": "color"
+      },
+      "debug": {
+        "kind": "boolean"
+      },
+      "type": {
+        "kind": "string"
+      }
+    }
+  },
+  "Container": {
+    "mode": "single",
+    "description": "瑞士军刀：尺寸 + 内边距 + 外边距 + 底色/装饰 + 对齐 + 裁剪 + 变换",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "backgroundBlendMode": {
+        "kind": "string"
+      },
+      "border": {
+        "kind": "string"
+      },
+      "borderBottom": {
+        "kind": "string"
+      },
+      "borderLeft": {
+        "kind": "string"
+      },
+      "borderRadius": {
+        "kind": "string"
+      },
+      "borderRadiusBottomLeft": {
+        "kind": "string"
+      },
+      "borderRadiusBottomRight": {
+        "kind": "string"
+      },
+      "borderRadiusTopLeft": {
+        "kind": "string"
+      },
+      "borderRadiusTopRight": {
+        "kind": "string"
+      },
+      "borderRight": {
+        "kind": "string"
+      },
+      "borderTop": {
+        "kind": "string"
+      },
+      "boxShadow": {
+        "kind": "string"
+      },
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "foregroundBackgroundBlendMode": {
+        "kind": "string"
+      },
+      "foregroundBorder": {
+        "kind": "string"
+      },
+      "foregroundBorderBottom": {
+        "kind": "string"
+      },
+      "foregroundBorderLeft": {
+        "kind": "string"
+      },
+      "foregroundBorderRadius": {
+        "kind": "string"
+      },
+      "foregroundBorderRadiusBottomLeft": {
+        "kind": "string"
+      },
+      "foregroundBorderRadiusBottomRight": {
+        "kind": "string"
+      },
+      "foregroundBorderRadiusTopLeft": {
+        "kind": "string"
+      },
+      "foregroundBorderRadiusTopRight": {
+        "kind": "string"
+      },
+      "foregroundBorderRight": {
+        "kind": "string"
+      },
+      "foregroundBorderTop": {
+        "kind": "string"
+      },
+      "foregroundBoxShadow": {
+        "kind": "string"
+      },
+      "foregroundColor": {
+        "kind": "color"
+      },
+      "foregroundGradientBegin": {
+        "kind": "string"
+      },
+      "foregroundGradientCenter": {
+        "kind": "string"
+      },
+      "foregroundGradientColors": {
+        "kind": "string"
+      },
+      "foregroundGradientEnd": {
+        "kind": "string"
+      },
+      "foregroundGradientEndAngle": {
+        "kind": "number"
+      },
+      "foregroundGradientFocal": {
+        "kind": "string"
+      },
+      "foregroundGradientFocalRadius": {
+        "kind": "number"
+      },
+      "foregroundGradientRadius": {
+        "kind": "number"
+      },
+      "foregroundGradientRotation": {
+        "kind": "number"
+      },
+      "foregroundGradientStartAngle": {
+        "kind": "number"
+      },
+      "foregroundGradientStops": {
+        "kind": "string"
+      },
+      "foregroundGradientTileMode": {
+        "kind": "string"
+      },
+      "foregroundGradientType": {
+        "kind": "string"
+      },
+      "foregroundShape": {
+        "kind": "string"
+      },
+      "gradientBegin": {
+        "kind": "string"
+      },
+      "gradientCenter": {
+        "kind": "string"
+      },
+      "gradientColors": {
+        "kind": "string"
+      },
+      "gradientEnd": {
+        "kind": "string"
+      },
+      "gradientEndAngle": {
+        "kind": "number"
+      },
+      "gradientFocal": {
+        "kind": "string"
+      },
+      "gradientFocalRadius": {
+        "kind": "number"
+      },
+      "gradientRadius": {
+        "kind": "number"
+      },
+      "gradientRotation": {
+        "kind": "number"
+      },
+      "gradientStartAngle": {
+        "kind": "number"
+      },
+      "gradientStops": {
+        "kind": "string"
+      },
+      "gradientTileMode": {
+        "kind": "string"
+      },
+      "gradientType": {
+        "kind": "string"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "margin": {
+        "kind": "string"
+      },
+      "maxHeight": {
+        "kind": "number"
+      },
+      "maxWidth": {
+        "kind": "number"
+      },
+      "minHeight": {
+        "kind": "number"
+      },
+      "minWidth": {
+        "kind": "number"
+      },
+      "padding": {
+        "kind": "string"
+      },
+      "shape": {
+        "kind": "string"
+      },
+      "transform": {
+        "kind": "string"
+      },
+      "transformAlignment": {
+        "kind": "string"
+      },
+      "width": {
+        "kind": "number"
+      }
+    }
+  },
+  "Border": {
+    "mode": "single",
+    "description": "`Border(top = BorderSide.NONE, right = …, bottom = …, left = …)`（注意参数顺序是 **top, right, bottom, left**）/ `Border.all(color, width, style)` / `Border.symmetric(vertical, horizontal)`；`BoxBorder` 是抽象基类",
+    "attributes": {
+      "backgroundBlendMode": {
+        "kind": "string"
+      },
+      "border": {
+        "kind": "string"
+      },
+      "borderBottom": {
+        "kind": "string"
+      },
+      "borderLeft": {
+        "kind": "string"
+      },
+      "borderRadius": {
+        "kind": "string"
+      },
+      "borderRadiusBottomLeft": {
+        "kind": "string"
+      },
+      "borderRadiusBottomRight": {
+        "kind": "string"
+      },
+      "borderRadiusTopLeft": {
+        "kind": "string"
+      },
+      "borderRadiusTopRight": {
+        "kind": "string"
+      },
+      "borderRight": {
+        "kind": "string"
+      },
+      "borderTop": {
+        "kind": "string"
+      },
+      "boxShadow": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "gradientBegin": {
+        "kind": "string"
+      },
+      "gradientCenter": {
+        "kind": "string"
+      },
+      "gradientColors": {
+        "kind": "string"
+      },
+      "gradientEnd": {
+        "kind": "string"
+      },
+      "gradientEndAngle": {
+        "kind": "number"
+      },
+      "gradientFocal": {
+        "kind": "string"
+      },
+      "gradientFocalRadius": {
+        "kind": "number"
+      },
+      "gradientRadius": {
+        "kind": "number"
+      },
+      "gradientRotation": {
+        "kind": "number"
+      },
+      "gradientStartAngle": {
+        "kind": "number"
+      },
+      "gradientStops": {
+        "kind": "string"
+      },
+      "gradientTileMode": {
+        "kind": "string"
+      },
+      "gradientType": {
+        "kind": "string"
+      },
+      "shape": {
+        "kind": "string"
+      }
+    }
+  },
+  "ColoredBox": {
+    "mode": "single",
+    "description": "填充底色",
+    "attributes": {
+      "color": {
+        "kind": "color",
+        "required": true
+      }
+    }
+  },
+  "DecoratedBox": {
+    "mode": "single",
+    "description": "背景/前景装饰（边框、圆角、阴影、渐变、图片）",
+    "attributes": {
+      "backgroundBlendMode": {
+        "kind": "string"
+      },
+      "border": {
+        "kind": "string"
+      },
+      "borderBottom": {
+        "kind": "string"
+      },
+      "borderLeft": {
+        "kind": "string"
+      },
+      "borderRadius": {
+        "kind": "string"
+      },
+      "borderRadiusBottomLeft": {
+        "kind": "string"
+      },
+      "borderRadiusBottomRight": {
+        "kind": "string"
+      },
+      "borderRadiusTopLeft": {
+        "kind": "string"
+      },
+      "borderRadiusTopRight": {
+        "kind": "string"
+      },
+      "borderRight": {
+        "kind": "string"
+      },
+      "borderTop": {
+        "kind": "string"
+      },
+      "boxShadow": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "gradientBegin": {
+        "kind": "string"
+      },
+      "gradientCenter": {
+        "kind": "string"
+      },
+      "gradientColors": {
+        "kind": "string"
+      },
+      "gradientEnd": {
+        "kind": "string"
+      },
+      "gradientEndAngle": {
+        "kind": "number"
+      },
+      "gradientFocal": {
+        "kind": "string"
+      },
+      "gradientFocalRadius": {
+        "kind": "number"
+      },
+      "gradientRadius": {
+        "kind": "number"
+      },
+      "gradientRotation": {
+        "kind": "number"
+      },
+      "gradientStartAngle": {
+        "kind": "number"
+      },
+      "gradientStops": {
+        "kind": "string"
+      },
+      "gradientTileMode": {
+        "kind": "string"
+      },
+      "gradientType": {
+        "kind": "string"
+      },
+      "position": {
+        "kind": "string"
+      },
+      "shape": {
+        "kind": "string"
+      }
+    }
+  },
+  "Flex": {
+    "mode": "multiple",
+    "description": "通过必填的 `direction` 选择水平或垂直主轴",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "crossAxisAlignment": {
+        "kind": "string"
+      },
+      "direction": {
+        "kind": "string",
+        "required": true
+      },
+      "mainAxisAlignment": {
+        "kind": "string"
+      },
+      "mainAxisSize": {
+        "kind": "string"
+      },
+      "textBaseline": {
+        "kind": "string"
+      },
+      "textDirection": {
+        "kind": "string"
+      },
+      "verticalDirection": {
+        "kind": "string"
+      }
+    }
+  },
+  "Row": {
+    "mode": "multiple",
+    "description": "",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "crossAxisAlignment": {
+        "kind": "string"
+      },
+      "mainAxisAlignment": {
+        "kind": "string"
+      },
+      "mainAxisSize": {
+        "kind": "string"
+      },
+      "textBaseline": {
+        "kind": "string"
+      },
+      "textDirection": {
+        "kind": "string"
+      },
+      "verticalDirection": {
+        "kind": "string"
+      }
+    }
+  },
+  "Column": {
+    "mode": "multiple",
+    "description": "",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "crossAxisAlignment": {
+        "kind": "string"
+      },
+      "mainAxisAlignment": {
+        "kind": "string"
+      },
+      "mainAxisSize": {
+        "kind": "string"
+      },
+      "textBaseline": {
+        "kind": "string"
+      },
+      "textDirection": {
+        "kind": "string"
+      },
+      "verticalDirection": {
+        "kind": "string"
+      }
+    }
+  },
+  "Expanded": {
+    "mode": "single",
+    "description": "只能作为 `Flex` / `Row` / `Column` 的直接子节点",
+    "attributes": {
+      "flex": {
+        "kind": "integer"
+      }
+    }
+  },
+  "Flexible": {
+    "mode": "single",
+    "description": "只能作为 `Flex` / `Row` / `Column` 的直接子节点",
+    "attributes": {
+      "fit": {
+        "kind": "string"
+      },
+      "flex": {
+        "kind": "integer"
+      }
+    }
+  },
+  "Spacer": {
+    "mode": "none",
+    "description": "在 Flex/Row/Column 主轴上按权重占用剩余空间，不绘制内容",
+    "attributes": {
+      "flex": {
+        "kind": "integer"
+      }
+    }
+  },
+  "Stack": {
+    "mode": "multiple",
+    "description": "层叠布局",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "fit": {
+        "kind": "string"
+      },
+      "textDirection": {
+        "kind": "string"
+      }
+    }
+  },
+  "IndexedStack": {
+    "mode": "multiple",
+    "description": "布局全部子节点，只绘制指定索引的子节点",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "fit": {
+        "kind": "string"
+      },
+      "index": {
+        "kind": "integer"
+      },
+      "textDirection": {
+        "kind": "string"
+      }
+    }
+  },
+  "Positioned": {
+    "mode": "single",
+    "description": "Stack 子项定位（**只能放在 Stack 或 IndexedStack 里**）",
+    "attributes": {
+      "bottom": {
+        "kind": "number"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "left": {
+        "kind": "number"
+      },
+      "right": {
+        "kind": "number"
+      },
+      "top": {
+        "kind": "number"
+      },
+      "width": {
+        "kind": "number"
+      }
+    }
+  },
+  "SizedBox": {
+    "mode": "single",
+    "description": "强制宽/高",
+    "attributes": {
+      "height": {
+        "kind": "number"
+      },
+      "width": {
+        "kind": "number"
+      }
+    }
+  },
+  "AspectRatio": {
+    "mode": "single",
+    "description": "根据父约束和指定宽高比确定自身及子节点尺寸",
+    "attributes": {
+      "aspectRatio": {
+        "kind": "number",
+        "required": true
+      }
+    }
+  },
+  "FractionallySizedBox": {
+    "mode": "single",
+    "description": "按父约束最大宽高的比例设置子节点尺寸",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "heightFactor": {
+        "kind": "number"
+      },
+      "widthFactor": {
+        "kind": "number"
+      }
+    }
+  },
+  "UnconstrainedBox": {
+    "mode": "single",
+    "description": "解除子节点一个或两个方向的父约束，自身仍遵守父约束",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "constrainedAxis": {
+        "kind": "string"
+      }
+    }
+  },
+  "ConstrainedBox": {
+    "mode": "single",
+    "description": "施加额外约束",
+    "attributes": {
+      "maxHeight": {
+        "kind": "number"
+      },
+      "maxWidth": {
+        "kind": "number"
+      },
+      "minHeight": {
+        "kind": "number"
+      },
+      "minWidth": {
+        "kind": "number"
+      }
+    }
+  },
+  "LimitedBox": {
+    "mode": "single",
+    "description": "**仅当约束无限时**才施加最大宽/高",
+    "attributes": {
+      "maxHeight": {
+        "kind": "number"
+      },
+      "maxWidth": {
+        "kind": "number"
+      }
+    }
+  },
+  "OverflowBox": {
+    "mode": "single",
+    "description": "给子节点不同于自己的约束（可溢出）",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "maxHeight": {
+        "kind": "number"
+      },
+      "maxWidth": {
+        "kind": "number"
+      },
+      "minHeight": {
+        "kind": "number"
+      },
+      "minWidth": {
+        "kind": "number"
+      }
+    }
+  },
+  "SizedOverflowBox": {
+    "mode": "single",
+    "description": "自身按指定尺寸、子节点按父约束（可溢出）",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "height": {
+        "kind": "number",
+        "required": true
+      },
+      "width": {
+        "kind": "number",
+        "required": true
+      }
+    }
+  },
+  "Padding": {
+    "mode": "single",
+    "description": "内边距",
+    "attributes": {
+      "padding": {
+        "kind": "string"
+      }
+    }
+  },
+  "Align": {
+    "mode": "single",
+    "description": "对齐子节点，可按比例包裹",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "heightFactor": {
+        "kind": "number"
+      },
+      "widthFactor": {
+        "kind": "number"
+      }
+    }
+  },
+  "Center": {
+    "mode": "single",
+    "description": "居中子节点，可按比例包裹",
+    "attributes": {
+      "heightFactor": {
+        "kind": "number"
+      },
+      "widthFactor": {
+        "kind": "number"
+      }
+    }
+  },
+  "Opacity": {
+    "mode": "single",
+    "description": "整体透明度",
+    "attributes": {
+      "opacity": {
+        "kind": "number"
+      }
+    }
+  },
+  "Transform": {
+    "mode": "single",
+    "description": "仿射变换（旋转/平移/自定义矩阵）",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "matrix": {
+        "kind": "string",
+        "required": true
+      },
+      "origin": {
+        "kind": "string"
+      }
+    }
+  },
+  "ClipRect": {
+    "mode": "single",
+    "description": "按自身矩形范围裁剪子节点",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      }
+    }
+  },
+  "ClipOval": {
+    "mode": "single",
+    "description": "按自身内接椭圆裁剪子节点",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      }
+    }
+  },
+  "ClipRRect": {
+    "mode": "single",
+    "description": "按圆角矩形裁剪子节点",
+    "attributes": {
+      "borderRadius": {
+        "kind": "string"
+      },
+      "borderRadiusBottomLeft": {
+        "kind": "string"
+      },
+      "borderRadiusBottomRight": {
+        "kind": "string"
+      },
+      "borderRadiusTopLeft": {
+        "kind": "string"
+      },
+      "borderRadiusTopRight": {
+        "kind": "string"
+      },
+      "clipBehavior": {
+        "kind": "string"
+      }
+    }
+  },
+  "ColorFiltered": {
+    "mode": "single",
+    "description": "颜色滤镜",
+    "attributes": {
+      "blendMode": {
+        "kind": "string",
+        "required": true
+      },
+      "color": {
+        "kind": "color",
+        "required": true
+      }
+    }
+  },
+  "ImageFiltered": {
+    "mode": "single",
+    "description": "图像滤镜",
+    "attributes": {
+      "sigmaX": {
+        "kind": "number",
+        "required": true
+      },
+      "sigmaY": {
+        "kind": "number",
+        "required": true
+      },
+      "tileMode": {
+        "kind": "string"
+      }
+    }
+  },
+  "BackdropFilter": {
+    "mode": "single",
+    "description": "背景滤镜（模糊下层已绘制内容）",
+    "attributes": {
+      "blendMode": {
+        "kind": "string"
+      },
+      "sigmaX": {
+        "kind": "number",
+        "required": true
+      },
+      "sigmaY": {
+        "kind": "number",
+        "required": true
+      },
+      "tileMode": {
+        "kind": "string"
+      }
+    }
+  },
+  "Image": {
+    "mode": "none",
+    "description": "`url` 网络图，或 `dataUri` 内嵌图片",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "colorBlendMode": {
+        "kind": "string"
+      },
+      "dataUri": {
+        "kind": "string"
+      },
+      "fit": {
+        "kind": "string"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "noCache": {
+        "kind": "boolean"
+      },
+      "opacity": {
+        "kind": "number"
+      },
+      "repeat": {
+        "kind": "string"
+      },
+      "scale": {
+        "kind": "number"
+      },
+      "url": {
+        "kind": "string"
+      },
+      "width": {
+        "kind": "number"
+      }
+    }
+  },
+  "Text": {
+    "mode": "multiple",
+    "description": "单样式文本",
+    "attributes": {
+      "backgroundColor": {
+        "kind": "string"
+      },
+      "baselineMode": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "decoration": {
+        "kind": "string"
+      },
+      "decorationColor": {
+        "kind": "string"
+      },
+      "decorationGaps": {
+        "kind": "boolean"
+      },
+      "decorationLineStyle": {
+        "kind": "string"
+      },
+      "decorationThickness": {
+        "kind": "number"
+      },
+      "fontEdging": {
+        "kind": "string"
+      },
+      "fontFamily": {
+        "kind": "string"
+      },
+      "fontFeatures": {
+        "kind": "string"
+      },
+      "fontHinting": {
+        "kind": "string"
+      },
+      "fontSize": {
+        "kind": "number"
+      },
+      "fontStyle": {
+        "kind": "string"
+      },
+      "foregroundAntiAlias": {
+        "kind": "boolean"
+      },
+      "foregroundColor": {
+        "kind": "string"
+      },
+      "foregroundMode": {
+        "kind": "string"
+      },
+      "foregroundStrokeCap": {
+        "kind": "string"
+      },
+      "foregroundStrokeJoin": {
+        "kind": "string"
+      },
+      "foregroundStrokeMiter": {
+        "kind": "number"
+      },
+      "foregroundStrokeWidth": {
+        "kind": "number"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "letterSpacing": {
+        "kind": "number"
+      },
+      "locale": {
+        "kind": "string"
+      },
+      "maxLines": {
+        "kind": "integer"
+      },
+      "overflow": {
+        "kind": "string"
+      },
+      "softWrap": {
+        "kind": "boolean"
+      },
+      "strutEnabled": {
+        "kind": "boolean"
+      },
+      "strutFontFamily": {
+        "kind": "string"
+      },
+      "strutFontSize": {
+        "kind": "number"
+      },
+      "strutFontStyle": {
+        "kind": "string"
+      },
+      "strutHeight": {
+        "kind": "number"
+      },
+      "strutHeightForced": {
+        "kind": "boolean"
+      },
+      "strutHeightOverridden": {
+        "kind": "boolean"
+      },
+      "strutLeading": {
+        "kind": "number"
+      },
+      "subpixel": {
+        "kind": "boolean"
+      },
+      "text": {
+        "kind": "string"
+      },
+      "textAlign": {
+        "kind": "string"
+      },
+      "textDirection": {
+        "kind": "string"
+      },
+      "textHeightMode": {
+        "kind": "string"
+      },
+      "textShadow": {
+        "kind": "string"
+      },
+      "textWidthBasis": {
+        "kind": "string"
+      },
+      "topRatio": {
+        "kind": "number"
+      },
+      "wordSpacing": {
+        "kind": "number"
+      }
+    }
+  },
+  "Raw": {
+    "mode": "multiple",
+    "description": "原样文本，**不 trim**",
+    "attributes": {
+      "backgroundColor": {
+        "kind": "string"
+      },
+      "baselineMode": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "decoration": {
+        "kind": "string"
+      },
+      "decorationColor": {
+        "kind": "string"
+      },
+      "decorationGaps": {
+        "kind": "boolean"
+      },
+      "decorationLineStyle": {
+        "kind": "string"
+      },
+      "decorationThickness": {
+        "kind": "number"
+      },
+      "fontEdging": {
+        "kind": "string"
+      },
+      "fontFamily": {
+        "kind": "string"
+      },
+      "fontFeatures": {
+        "kind": "string"
+      },
+      "fontHinting": {
+        "kind": "string"
+      },
+      "fontSize": {
+        "kind": "number"
+      },
+      "fontStyle": {
+        "kind": "string"
+      },
+      "foregroundAntiAlias": {
+        "kind": "boolean"
+      },
+      "foregroundColor": {
+        "kind": "string"
+      },
+      "foregroundMode": {
+        "kind": "string"
+      },
+      "foregroundStrokeCap": {
+        "kind": "string"
+      },
+      "foregroundStrokeJoin": {
+        "kind": "string"
+      },
+      "foregroundStrokeMiter": {
+        "kind": "number"
+      },
+      "foregroundStrokeWidth": {
+        "kind": "number"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "letterSpacing": {
+        "kind": "number"
+      },
+      "locale": {
+        "kind": "string"
+      },
+      "subpixel": {
+        "kind": "boolean"
+      },
+      "text": {
+        "kind": "string"
+      },
+      "textShadow": {
+        "kind": "string"
+      },
+      "topRatio": {
+        "kind": "number"
+      },
+      "wordSpacing": {
+        "kind": "number"
+      }
+    }
+  },
+  "Emoji": {
+    "mode": "none",
+    "description": "`url` 网络图或 `dataUri` 内嵌图片；只能作为 `Text` 的子节点",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "baseline": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "colorBlendMode": {
+        "kind": "string"
+      },
+      "dataUri": {
+        "kind": "string"
+      },
+      "fit": {
+        "kind": "string"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "imageAlignment": {
+        "kind": "string"
+      },
+      "opacity": {
+        "kind": "number"
+      },
+      "repeat": {
+        "kind": "string"
+      },
+      "scale": {
+        "kind": "number"
+      },
+      "url": {
+        "kind": "string"
+      },
+      "width": {
+        "kind": "number"
+      }
+    }
+  },
+  "WidgetSpan": {
+    "mode": "single",
+    "description": "把一个普通 Widget 嵌入文本，只能作为 `Text` 的子节点",
+    "attributes": {
+      "alignment": {
+        "kind": "string"
+      },
+      "backgroundColor": {
+        "kind": "string"
+      },
+      "baseline": {
+        "kind": "string"
+      },
+      "baselineMode": {
+        "kind": "string"
+      },
+      "color": {
+        "kind": "color"
+      },
+      "decoration": {
+        "kind": "string"
+      },
+      "decorationColor": {
+        "kind": "string"
+      },
+      "decorationGaps": {
+        "kind": "boolean"
+      },
+      "decorationLineStyle": {
+        "kind": "string"
+      },
+      "decorationThickness": {
+        "kind": "number"
+      },
+      "fontEdging": {
+        "kind": "string"
+      },
+      "fontFamily": {
+        "kind": "string"
+      },
+      "fontFeatures": {
+        "kind": "string"
+      },
+      "fontHinting": {
+        "kind": "string"
+      },
+      "fontSize": {
+        "kind": "number"
+      },
+      "fontStyle": {
+        "kind": "string"
+      },
+      "foregroundAntiAlias": {
+        "kind": "boolean"
+      },
+      "foregroundColor": {
+        "kind": "string"
+      },
+      "foregroundMode": {
+        "kind": "string"
+      },
+      "foregroundStrokeCap": {
+        "kind": "string"
+      },
+      "foregroundStrokeJoin": {
+        "kind": "string"
+      },
+      "foregroundStrokeMiter": {
+        "kind": "number"
+      },
+      "foregroundStrokeWidth": {
+        "kind": "number"
+      },
+      "height": {
+        "kind": "number"
+      },
+      "letterSpacing": {
+        "kind": "number"
+      },
+      "locale": {
+        "kind": "string"
+      },
+      "subpixel": {
+        "kind": "boolean"
+      },
+      "textShadow": {
+        "kind": "string"
+      },
+      "topRatio": {
+        "kind": "number"
+      },
+      "wordSpacing": {
+        "kind": "number"
+      }
+    }
+  }
+}
