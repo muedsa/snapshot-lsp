@@ -16,13 +16,13 @@ Snapshot 类 DOM DSL 的通用 TypeScript 语言服务。核心不依赖编辑�
 要求 Node.js 22+。
 
 ```bash
-npm ci
-npm test
-npm run build
+pnpm install --frozen-lockfile
+pnpm test
+pnpm run build
 node dist/node.js --stdio
 ```
 
-更新 Snapshot 源码后，从本仓库执行 `npm run sync:catalog`。默认读取同级 `../snapshot`；也可执行 `node scripts/sync-catalog.mjs <snapshot 仓库路径>`。更新后运行测试，核对新属性的类型与取值规则。
+更新 Snapshot 源码后，从本仓库执行 `pnpm run sync:catalog`。默认读取同级 `../snapshot`；也可执行 `node scripts/sync-catalog.mjs <snapshot 仓库路径>`。更新后运行测试，核对新属性的类型与取值规则。
 
 ## 集成
 

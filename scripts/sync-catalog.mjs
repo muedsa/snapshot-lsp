@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-// 从 Snapshot 源码更新静态目录。运行时和 npm 包不依赖 Snapshot 仓库。
+// 从 Snapshot 源码更新静态目录。运行时和发布的包不依赖 Snapshot 仓库。
 const snapshot = resolve(process.argv[2] ?? '../snapshot');
 const base = resolve(snapshot, 'parser/src/main/kotlin/com/muedsa/snapshot/parser');
 const read = (path) => readFileSync(resolve(base, path), 'utf8');
