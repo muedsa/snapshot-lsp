@@ -1,10 +1,17 @@
 {
-  "name": "snapshot-lsp",
+  "name": "@muedsa/snapshot-lsp",
   "version": "0.1.0",
   "packageManager": "pnpm@12.4.2",
   "type": "module",
   "description": "Snapshot 类 DOM DSL 的通用语言服务",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muedsa/snapshot-lsp.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "engines": { "node": ">=22" },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

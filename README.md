@@ -35,7 +35,7 @@ node dist/node.js --stdio
 用打包器构建 Worker 入口：
 
 ```ts
-import { startBrowserWorkerServer } from 'snapshot-lsp/browser';
+import { startBrowserWorkerServer } from '@muedsa/snapshot-lsp/browser';
 
 startBrowserWorkerServer(self);
 ```
@@ -45,7 +45,7 @@ startBrowserWorkerServer(self);
 ### 直接使用语言核心
 
 ```ts
-import { SnapshotLanguageService } from 'snapshot-lsp';
+import { SnapshotLanguageService } from '@muedsa/snapshot-lsp';
 
 const service = new SnapshotLanguageService();
 const diagnostics = service.diagnostics('<Snapshot><Text>Hello</Text></Snapshot>');
@@ -53,6 +53,12 @@ const completions = service.completions('<Snapshot><Co', { line: 0, character: 1
 ```
 
 扩展标签时向构造函数传入 `{ Custom: { mode: 'none', description: '...', attributes: { title: { kind: 'string' } } } }`。目录只描述静态语法，宿主仍需在 Snapshot 的 `WidgetParserManager` 中注册对应解析器。
+
+## 发布到 GitHub Packages
+
+将 `package.json` 的版本更新为新版本，创建并推送同版本标签（例如 `v0.1.0`）。[发布工作流](.github/workflows/publish.yml)会安装锁定依赖、运行测试，再使用仓库的 `GITHUB_TOKEN` 发布 `@muedsa/snapshot-lsp`。标签版本与包版本不一致时，工作流会停止。已发布的版本不能重复发布。
+
+安装 GitHub Packages 中的包时，使用 `@muedsa:registry=https://npm.pkg.github.com` 配置 registry，并按 GitHub Packages 的要求提供读取权限的令牌。
 
 ## 与 Snapshot 的关系
 
