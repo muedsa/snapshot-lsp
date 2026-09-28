@@ -24,7 +24,7 @@ test('有效样例与 CDATA、注释不产生诊断', () => {
 
 test('结构、属性和取值诊断', () => {
   const found = codes(
-    '<Snapshot><Row><Expanded/><Spacer/><Positioned/></Row><Image url="a" dataUri="b" width="oops" color="red" foo="x" foo="y"/></Snapshot>',
+    '<Snapshot><Row><Expanded/><Spacer/><Positioned/></Row><Image url="a" dataUri="b" width="oops" color="not-a-color" foo="x" foo="y"/></Snapshot>',
   );
   for (const code of [
     'child-count',
@@ -39,6 +39,41 @@ test('结构、属性和取值诊断', () => {
   assert.ok(codes('<Container/>').includes('root-tag'));
   assert.ok(codes('<Snapshot><Flex/></Snapshot>').includes('missing-attribute'));
   assert.ok(codes('<Snapshot><Row><Expanded fit="LOOSE"/></Row></Snapshot>').includes('unknown-attribute'));
+});
+
+test('CSS 颜色诊断与 Snapshot parser 的支持范围一致', () => {
+  const valid = [
+    '#f00',
+    '#f008',
+    '#FF0000',
+    '#ff000080',
+    'red',
+    'RebeccaPurple',
+    'transparent',
+    'rgb(255, 0, 0)',
+    'rgba(255, 0, 0, .5)',
+    'rgb(100% 0% 0% / 50%)',
+    'hsl(120, 100%, 50%)',
+    'hsla(120, 100%, 50%, 50%)',
+    'hsl(0.5turn 100% 50% / 0.5)',
+  ];
+  for (const value of valid)
+    assert.ok(!codes(`<Snapshot background="${value}"><Container/></Snapshot>`).includes('invalid-color'), value);
+  const invalid = [
+    '#12',
+    '#abcdx',
+    '#123456789',
+    'rgb(1, 2)',
+    'rgb(1 2 3 /)',
+    'rgb(NaN 0 0)',
+    'hsl(120 1 50%)',
+    'hsl(0 100% 50% / NaN)',
+    'hsl(1e308turn 100% 50%)',
+    'currentColor',
+    'lab(50% 0 0)',
+  ];
+  for (const value of invalid)
+    assert.ok(codes(`<Snapshot background="${value}"><Container/></Snapshot>`).includes('invalid-color'), value);
 });
 
 test('标签、属性、枚举值和闭合标签补全', () => {

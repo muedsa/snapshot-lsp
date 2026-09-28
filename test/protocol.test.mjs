@@ -60,7 +60,12 @@ test('Node stdio LSP 握手、诊断和补全', async (t) => {
     jsonrpc: '2.0',
     method: 'textDocument/didOpen',
     params: {
-      textDocument: { uri, languageId: 'snapshot', version: 1, text: '<Snapshot><Image color="red"/></Snapshot>' },
+      textDocument: {
+        uri,
+        languageId: 'snapshot',
+        version: 1,
+        text: '<Snapshot><Image color="not-a-color"/></Snapshot>',
+      },
     },
   });
   const diagnostic = await waitFor(
@@ -72,7 +77,7 @@ test('Node stdio LSP 握手、诊断和补全', async (t) => {
     method: 'textDocument/didChange',
     params: {
       textDocument: { uri, version: 2 },
-      contentChanges: [{ text: '<Snapshot><Container color="#FF0000"/></Snapshot>' }],
+      contentChanges: [{ text: '<Snapshot><Container color="red"/></Snapshot>' }],
     },
   });
   const updated = await waitFor(

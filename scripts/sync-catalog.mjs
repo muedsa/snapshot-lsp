@@ -190,4 +190,10 @@ for (const cls of classes) {
 }
 if (Object.keys(tags).length !== 38) throw new Error(`标签数量异常: ${Object.keys(tags).length}`);
 writeFileSync(resolve('src/catalog.generated.json'), JSON.stringify(tags, null, 2) + '\n');
+const cssColorSource = read('attr/CssColorParser.kt');
+const namedColorBlock = cssColorSource.match(/private val namedColors:[\s\S]*?= """([\s\S]*?)"""\.trimIndent\(\)/)?.[1];
+if (!namedColorBlock) throw new Error('无法读取 Snapshot 的 CSS 命名颜色');
+const namedColors = [...namedColorBlock.matchAll(/\b([a-z]+):[0-9A-F]{6}\b/g)].map((match) => match[1]);
+if (namedColors.length !== 148) throw new Error(`CSS 命名颜色数量异常: ${namedColors.length}`);
+writeFileSync(resolve('src/css-color-names.generated.json'), JSON.stringify(namedColors, null, 2) + '\n');
 console.log(`已更新 ${Object.keys(tags).length} 个标签的静态目录`);
