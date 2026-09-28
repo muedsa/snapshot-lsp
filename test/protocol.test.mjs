@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import packageJson from '../package.json' with { type: 'json' };
 
 test('Node stdio LSP 握手、诊断和补全', async (t) => {
   const server = spawn(process.execPath, [fileURLToPath(new URL('../dist/node.js', import.meta.url)), '--stdio'], {
@@ -54,6 +55,7 @@ test('Node stdio LSP 握手、诊断和补全', async (t) => {
   };
   const initialize = await request('initialize', { processId: process.pid, rootUri: null, capabilities: {} });
   assert.equal(initialize.result.serverInfo.name, 'snapshot-lsp');
+  assert.equal(initialize.result.serverInfo.version, packageJson.version);
   send({ jsonrpc: '2.0', method: 'initialized', params: {} });
   const uri = 'file:///test.snapshot';
   send({

@@ -17,7 +17,7 @@ export function registerSnapshotServer(connection: Connection, service = new Sna
       completionProvider: { triggerCharacters: ['<', '/', ' ', '=', '"', "'"] },
       hoverProvider: true,
     },
-    serverInfo: { name: 'snapshot-lsp', version: '0.1.0' },
+    serverInfo: { name: 'snapshot-lsp', version: '0.1.1' },
   }));
   connection.onDidOpenTextDocument(({ textDocument }) => {
     const document = TextDocument.create(
