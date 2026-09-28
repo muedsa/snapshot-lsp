@@ -12,18 +12,36 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-    "./node": { "types": "./dist/node.d.ts", "default": "./dist/node.js" },
-    "./browser": { "types": "./dist/browser.d.ts", "default": "./dist/browser.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
+    }
   },
-  "bin": { "snapshot-lsp": "./dist/node.js" },
-  "files": ["dist", "README.md"],
+  "bin": {
+    "snapshot-lsp": "./dist/node.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "pnpm run build && node --test test/*.test.mjs",
     "prepack": "pnpm run build",
     "sync:catalog": "node scripts/sync-catalog.mjs"
@@ -34,6 +52,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.13.6",
+    "prettier": "^3.9.9",
     "typescript": "^5.9.3"
   }
 }

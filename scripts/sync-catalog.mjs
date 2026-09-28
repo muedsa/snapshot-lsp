@@ -38,7 +38,9 @@ for (const cls of classes) {
   const source = read(`widget/${cls}.kt`);
   const name = source.match(/override val id:\s*String\s*=\s*"([^"]+)"/)?.[1];
   const inherited = cls === 'IndexedStackParser' ? read('widget/StackParser.kt') : '';
-  const mode = (source + inherited).match(/override val containerMode:\s*ContainerMode\s*=\s*ContainerMode\.(\w+)/)?.[1]?.toLowerCase();
+  const mode = (source + inherited)
+    .match(/override val containerMode:\s*ContainerMode\s*=\s*ContainerMode\.(\w+)/)?.[1]
+    ?.toLowerCase();
   if (!name || !mode) throw new Error(`无法读取 ${cls} 的标签声明`);
   const attrs = new Map();
   for (const ref of source.matchAll(/CommonAttrDefine\.(\w+)(?:\.copyWith\s*\(\s*"([^"]+)")?/g)) {
@@ -60,7 +62,22 @@ for (const cls of classes) {
     }
   };
   if (['Border', 'DecoratedBox', 'Container'].includes(name)) {
-    const border = ['COLOR_N', 'BORDER_N', 'BORDER_LEFT_N', 'BORDER_TOP_N', 'BORDER_RIGHT_N', 'BORDER_BOTTOM_N', 'BOX_SHAPE', 'BORDER_RADIUS_N', 'BORDER_RADIUS_TOP_LEFT_N', 'BORDER_RADIUS_TOP_RIGHT_N', 'BORDER_RADIUS_BOTTOM_LEFT_N', 'BORDER_RADIUS_BOTTOM_RIGHT_N', 'BOX_SHADOW_N', 'BACKGROUND_BLEND_MODE_N'].map((key) => common.get(key));
+    const border = [
+      'COLOR_N',
+      'BORDER_N',
+      'BORDER_LEFT_N',
+      'BORDER_TOP_N',
+      'BORDER_RIGHT_N',
+      'BORDER_BOTTOM_N',
+      'BOX_SHAPE',
+      'BORDER_RADIUS_N',
+      'BORDER_RADIUS_TOP_LEFT_N',
+      'BORDER_RADIUS_TOP_RIGHT_N',
+      'BORDER_RADIUS_BOTTOM_LEFT_N',
+      'BORDER_RADIUS_BOTTOM_RIGHT_N',
+      'BOX_SHADOW_N',
+      'BACKGROUND_BLEND_MODE_N',
+    ].map((key) => common.get(key));
     const gradient = [...declarations(read('widget/GradientParser.kt')).values()];
     add([...border, ...gradient]);
     if (name === 'Container') add([...border, ...gradient], 'foreground');
@@ -72,7 +89,8 @@ for (const cls of classes) {
         const d = common.get(ref[1]);
         if (d) attrs.set(d.name, d);
       }
-      for (const key of ['imageAlignment', 'colorBlendMode']) attrs.set(key, { name: key, kind: 'string', required: false });
+      for (const key of ['imageAlignment', 'colorBlendMode'])
+        attrs.set(key, { name: key, kind: 'string', required: false });
     }
     attrs.set('url', common.get('URL'));
     attrs.set('dataUri', { name: 'dataUri', kind: 'string', required: false });
@@ -84,23 +102,68 @@ for (const cls of classes) {
       const d = common.get(ref[1]);
       if (d) attrs.set(d.name, d);
     }
-    add([...declarations(read('widget/TextParser.kt')).values()].filter((d) => !d.name.startsWith('strut') && !['textAlign', 'textDirection', 'softWrap', 'overflow', 'maxLines', 'textWidthBasis', 'textHeightMode', 'imageAlignment'].includes(d.name)));
+    add(
+      [...declarations(read('widget/TextParser.kt')).values()].filter(
+        (d) =>
+          !d.name.startsWith('strut') &&
+          ![
+            'textAlign',
+            'textDirection',
+            'softWrap',
+            'overflow',
+            'maxLines',
+            'textWidthBasis',
+            'textHeightMode',
+            'imageAlignment',
+          ].includes(d.name),
+      ),
+    );
     attrs.set('text', { ...common.get('TEXT_N') });
     if (name === 'Text') {
-      for (const key of ['textAlign', 'textDirection', 'softWrap', 'overflow', 'maxLines', 'textWidthBasis', 'textHeightMode']) attrs.set(key, declarations(read('widget/TextParser.kt')).get('ATTR_' + key.replace(/[A-Z]/g, (c) => '_' + c).toUpperCase()) ?? { name: key, kind: 'string', required: false });
-      for (const d of declarations(read('widget/TextParser.kt')).values()) if (d.name.startsWith('strut')) attrs.set(d.name, d);
+      for (const key of [
+        'textAlign',
+        'textDirection',
+        'softWrap',
+        'overflow',
+        'maxLines',
+        'textWidthBasis',
+        'textHeightMode',
+      ])
+        attrs.set(
+          key,
+          declarations(read('widget/TextParser.kt')).get(
+            'ATTR_' + key.replace(/[A-Z]/g, (c) => '_' + c).toUpperCase(),
+          ) ?? { name: key, kind: 'string', required: false },
+        );
+      for (const d of declarations(read('widget/TextParser.kt')).values())
+        if (d.name.startsWith('strut')) attrs.set(d.name, d);
     }
   }
   if (name === 'Snapshot') {
     for (const d of declarations(read('SnapshotElement.kt')).values()) attrs.set(d.name, d);
   }
   if (name === 'ClipRRect') {
-    for (const key of ['BORDER_RADIUS_N', 'BORDER_RADIUS_TOP_LEFT_N', 'BORDER_RADIUS_TOP_RIGHT_N', 'BORDER_RADIUS_BOTTOM_LEFT_N', 'BORDER_RADIUS_BOTTOM_RIGHT_N']) {
-      const d = common.get(key); attrs.set(d.name, d);
+    for (const key of [
+      'BORDER_RADIUS_N',
+      'BORDER_RADIUS_TOP_LEFT_N',
+      'BORDER_RADIUS_TOP_RIGHT_N',
+      'BORDER_RADIUS_BOTTOM_LEFT_N',
+      'BORDER_RADIUS_BOTTOM_RIGHT_N',
+    ]) {
+      const d = common.get(key);
+      attrs.set(d.name, d);
     }
   }
   if (name === 'BackdropFilter') {
-    for (const key of ['sigmaX', 'sigmaY', 'tileMode']) attrs.set(key, { ...({ sigmaX: { name: key, kind: 'number', required: true }, sigmaY: { name: key, kind: 'number', required: true }, tileMode: common.get('FILTER_TILE_MODE') })[key], name: key });
+    for (const key of ['sigmaX', 'sigmaY', 'tileMode'])
+      attrs.set(key, {
+        ...{
+          sigmaX: { name: key, kind: 'number', required: true },
+          sigmaY: { name: key, kind: 'number', required: true },
+          tileMode: common.get('FILTER_TILE_MODE'),
+        }[key],
+        name: key,
+      });
   }
   if (['Expanded', 'Spacer'].includes(name)) attrs.delete('fit');
   if (name === 'Text') attrs.delete('imageAlignment');
@@ -115,7 +178,15 @@ for (const cls of classes) {
     attrs.set('alignment', { name: 'alignment', kind: 'string', required: false });
     attrs.set('baseline', { name: 'baseline', kind: 'string', required: false });
   }
-  tags[name] = { mode, description: tagDocs.get(name) ?? '', attributes: Object.fromEntries([...attrs].sort(([a], [b]) => a.localeCompare(b)).map(([key, d]) => [key, { kind: d.kind, ...(d.required ? { required: true } : {}) }])) };
+  tags[name] = {
+    mode,
+    description: tagDocs.get(name) ?? '',
+    attributes: Object.fromEntries(
+      [...attrs]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, d]) => [key, { kind: d.kind, ...(d.required ? { required: true } : {}) }]),
+    ),
+  };
 }
 if (Object.keys(tags).length !== 38) throw new Error(`标签数量异常: ${Object.keys(tags).length}`);
 writeFileSync(resolve('src/catalog.generated.json'), JSON.stringify(tags, null, 2) + '\n');

@@ -17,6 +17,7 @@ Snapshot 类 DOM DSL 的通用 TypeScript 语言服务。核心不依赖编辑�
 
 ```bash
 pnpm install --frozen-lockfile
+pnpm run format:check
 pnpm test
 pnpm run build
 node dist/node.js --stdio

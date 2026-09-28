@@ -1,0 +1,6 @@
+dist/
+node_modules/
+.npm-cache/
+.pnpm-store/
+pnpm-lock.yaml
+src/catalog.generated.json
