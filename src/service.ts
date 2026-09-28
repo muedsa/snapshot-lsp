@@ -33,7 +33,10 @@ export class SnapshotLanguageService {
             {
               label: open.name,
               kind: 10,
-              textEdit: { range: replaceRange(document, offset - closing[1].length, offset), newText: open.name },
+              textEdit: {
+                range: replaceRange(document, offset - closing[1].length, offset),
+                newText: open.name + (text[offset] === '>' ? '' : '>'),
+              },
             },
           ]
         : [];

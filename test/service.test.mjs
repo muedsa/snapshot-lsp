@@ -51,6 +51,17 @@ test('标签、属性、枚举值和闭合标签补全', () => {
   assert.ok(!labels('<Snapshot><Text><').includes('Container'));
 });
 
+test('闭合标签补全包含结束尖括号且不会重复', () => {
+  const incomplete = '<Snapshot><Text></Te';
+  const completion = service.completions(incomplete, { line: 0, character: incomplete.length })[0];
+  assert.equal(completion.textEdit.newText, 'Text>');
+
+  const complete = '<Snapshot><Text></Text>';
+  const beforeClosingBracket = complete.length - 1;
+  const existingBracketCompletion = service.completions(complete, { line: 0, character: beforeClosingBracket })[0];
+  assert.equal(existingBracketCompletion.textEdit.newText, 'Text');
+});
+
 test('悬停信息与独立扩展目录', () => {
   const hover = service.hover('<Snapshot><Container width="10"/></Snapshot>', { line: 0, character: 23 });
   assert.match(hover.contents.value, /Container\.width/);
