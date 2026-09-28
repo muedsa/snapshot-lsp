@@ -38,6 +38,7 @@ export function registerSnapshotServer(connection: Connection, service = new Sna
   });
   connection.onDidCloseTextDocument(({ textDocument }) => {
     documents.delete(textDocument.uri);
+    service.release(textDocument.uri);
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics: [] });
   });
   connection.onCompletion(({ textDocument, position }) => {

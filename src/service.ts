@@ -1,32 +1,57 @@
 import type { CompletionItem, Diagnostic, Hover, Position, Range } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { createCatalog, type TagSpec } from './catalog.js';
-import { parseDocument, type ElementNode } from './parser.js';
+import { parseDocument, type ParseResult } from './parser.js';
+
+interface Analysis {
+  text: string;
+  document: TextDocument;
+  parsed: ParseResult;
+}
 
 export class SnapshotLanguageService {
   readonly catalog: Record<string, TagSpec>;
+  private readonly analyses = new Map<string, Analysis>();
 
   constructor(overrides: Record<string, TagSpec> = {}) {
     this.catalog = createCatalog(overrides);
   }
 
-  private document(text: string, uri: string): TextDocument {
-    return TextDocument.create(uri, 'snapshot', 1, text);
+  private analyze(text: string, uri: string): Analysis {
+    const cached = this.analyses.get(uri);
+    if (cached?.text === text) return cached;
+    const document = TextDocument.create(uri, 'snapshot', 1, text);
+    const analysis = { text, document, parsed: parseDocument(document, this.catalog) };
+    this.analyses.set(uri, analysis);
+    return analysis;
+  }
+
+  /** 文档关闭或标签目录被外部修改后，清除对应文档的解析缓存。 */
+  release(uri: string): void {
+    this.analyses.delete(uri);
   }
 
   diagnostics(text: string, uri = 'file:///document.snapshot'): Diagnostic[] {
-    return parseDocument(this.document(text, uri), this.catalog).diagnostics;
+    return this.analyze(text, uri).parsed.diagnostics;
   }
 
   completions(text: string, position: Position, uri = 'file:///document.snapshot'): CompletionItem[] {
-    const document = this.document(text, uri),
-      offset = document.offsetAt(position);
-    const parsed = parseDocument(document, this.catalog);
-    const before = text.slice(0, offset);
-    const closing = /<\/([A-Za-z0-9:_-]*)$/.exec(before);
-    if (closing) {
+    const { document, parsed } = this.analyze(text, uri);
+    const offset = document.offsetAt(position);
+    if (
+      parsed.ignoredRanges.some(
+        ({ start, end, incomplete }) => offset > start && (offset < end || (incomplete && offset === end)),
+      )
+    )
+      return [];
+    const token = parsed.tags.findLast(
+      ({ nameStart, end, incomplete }) => offset >= nameStart && (offset < end || (incomplete && offset === end)),
+    );
+    if (!token) return [];
+    if (token.closing) {
+      if (offset > token.nameEnd) return [];
       const open = parsed.elements
-        .filter((n) => n.start < offset && n.openEnd <= offset && n.end >= offset && !n.selfClosing)
+        .filter((n) => n.start < token.start && n.openEnd <= token.start && n.end >= token.start && !n.selfClosing)
         .at(-1);
       return open
         ? [
@@ -34,38 +59,39 @@ export class SnapshotLanguageService {
               label: open.name,
               kind: 10,
               textEdit: {
-                range: replaceRange(document, offset - closing[1].length, offset),
-                newText: open.name + (text[offset] === '>' ? '' : '>'),
+                range: replaceRange(document, token.nameStart, token.nameEnd),
+                newText: open.name + (token.incomplete && token.nameEnd === token.end ? '>' : ''),
               },
             },
           ]
         : [];
     }
-    const opening = /<([A-Za-z0-9:_-]*)$/.exec(before);
-    if (opening) {
-      const openingStart = offset - opening[0].length;
-      const parent = parsed.elements
-        .filter((n) => n.start < openingStart && n.openEnd <= offset && n.end >= offset && !n.selfClosing)
-        .at(-1);
+    if (offset <= token.nameEnd) {
+      const parent =
+        token.element?.parent ??
+        parsed.elements
+          .filter((n) => n.start < token.start && n.openEnd <= token.start && n.end >= token.start && !n.selfClosing)
+          .at(-1);
       if (
         parent &&
         (this.catalog[parent.name]?.mode === 'none' ||
-          (this.catalog[parent.name]?.mode === 'single' && parent.children.some((child) => child.start < openingStart)))
+          (this.catalog[parent.name]?.mode === 'single' && parent.children.some((child) => child.start < token.start)))
       )
         return [];
       const allowed = parent
         ? Object.keys(this.catalog).filter((name) => allowedChild(parent.name, name))
         : ['Snapshot'];
+      const prefix = text.slice(token.nameStart, offset);
       return allowed
-        .filter((name) => name.startsWith(opening[1]))
+        .filter((name) => name.startsWith(prefix))
         .map((name) => ({
           label: name,
           kind: 7,
           detail: this.catalog[name].description,
-          textEdit: { range: replaceRange(document, offset - opening[1].length, offset), newText: name },
+          textEdit: { range: replaceRange(document, token.nameStart, token.nameEnd), newText: name },
         }));
     }
-    const tag = parsed.elements.findLast((n) => n.start < offset && n.nameEnd <= offset && n.openEnd >= offset);
+    const tag = token.element;
     if (!tag) return [];
     const spec = this.catalog[tag.name];
     if (!spec) return [];
@@ -82,10 +108,11 @@ export class SnapshotLanguageService {
           textEdit: { range: replaceRange(document, valueAttr.valueStart!, valueAttr.valueEnd!), newText: value },
         }));
     }
-    const prefix = /[A-Za-z0-9:_-]*$/.exec(before)?.[0] ?? '';
-    const existing = new Set(
-      tag.attributes.filter((attr) => !(attr.start <= offset && offset <= attr.end)).map((attr) => attr.name),
-    );
+    const editingName = tag.attributes.find((attr) => attr.start <= offset && offset <= attr.end);
+    const prefix = editingName
+      ? text.slice(editingName.start, offset)
+      : (/[A-Za-z0-9:_-]*$/.exec(text.slice(tag.nameEnd, offset))?.[0] ?? '');
+    const existing = new Set(tag.attributes.filter((attr) => attr !== editingName).map((attr) => attr.name));
     return Object.entries(spec.attributes)
       .filter(([name]) => name.startsWith(prefix) && !existing.has(name))
       .map(([name, attr]) => ({
@@ -93,14 +120,17 @@ export class SnapshotLanguageService {
         kind: 10,
         detail: attr.required ? '必填属性' : attr.kind,
         insertTextFormat: 2,
-        textEdit: { range: replaceRange(document, offset - prefix.length, offset), newText: `${name}="\${1}"` },
+        textEdit: {
+          range: replaceRange(document, editingName?.start ?? offset - prefix.length, editingName?.end ?? offset),
+          newText: `${name}="\${1}"`,
+        },
       }));
   }
 
   hover(text: string, position: Position, uri = 'file:///document.snapshot'): Hover | null {
-    const document = this.document(text, uri),
-      offset = document.offsetAt(position);
-    const elements = parseDocument(document, this.catalog).elements;
+    const { document, parsed } = this.analyze(text, uri);
+    const offset = document.offsetAt(position);
+    const elements = parsed.elements;
     const node = elements.find((n) => n.start + 1 <= offset && offset <= n.nameEnd);
     if (node && this.catalog[node.name])
       return {

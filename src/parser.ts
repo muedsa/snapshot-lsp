@@ -18,13 +18,31 @@ export interface ElementNode {
   end: number;
   selfClosing: boolean;
   incomplete: boolean;
+  closed: boolean;
   attributes: AttributeNode[];
   parent?: ElementNode;
   children: ElementNode[];
 }
+export interface TagToken {
+  start: number;
+  nameStart: number;
+  nameEnd: number;
+  end: number;
+  name: string;
+  closing: boolean;
+  incomplete: boolean;
+  element?: ElementNode;
+}
+export interface IgnoredRange {
+  start: number;
+  end: number;
+  incomplete: boolean;
+}
 export interface ParseResult {
   elements: ElementNode[];
   roots: ElementNode[];
+  tags: TagToken[];
+  ignoredRanges: IgnoredRange[];
   diagnostics: Diagnostic[];
 }
 type Issue = { start: number; end: number; message: string; severity?: 1 | 2; code: string };
@@ -69,8 +87,11 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
   const source = document.getText();
   const elements: ElementNode[] = [],
     roots: ElementNode[] = [],
+    tags: TagToken[] = [],
+    ignoredRanges: IgnoredRange[] = [],
     issues: Issue[] = [],
     stack: ElementNode[] = [];
+  const namePattern = /[A-Za-z][A-Za-z0-9:_-]*/y;
   const issue = (start: number, end: number, code: string, message: string, severity: 1 | 2 = 1) =>
     issues.push({ start, end: Math.max(start + 1, end), code, message, severity });
   let i = 0;
@@ -84,12 +105,14 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
     if (source.startsWith('<!--', lt)) {
       const end = source.indexOf('-->', lt + 4);
       if (end < 0) issue(lt, source.length, 'unclosed-comment', '注释缺少 -->');
+      ignoredRanges.push({ start: lt, end: end < 0 ? source.length : end + 3, incomplete: end < 0 });
       i = end < 0 ? source.length : end + 3;
       continue;
     }
     if (source.startsWith('<![CDATA[', lt)) {
       const end = source.indexOf(']]>', lt + 9);
       if (end < 0) issue(lt, source.length, 'unclosed-cdata', 'CDATA 缺少 ]]>');
+      ignoredRanges.push({ start: lt, end: end < 0 ? source.length : end + 3, incomplete: end < 0 });
       if (!['Text', 'Raw'].includes(stack.at(-1)?.name ?? ''))
         issue(lt, end < 0 ? source.length : end + 3, 'unexpected-text', '此标签内不支持 CDATA 文本');
       i = end < 0 ? source.length : end + 3;
@@ -98,14 +121,26 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
     if (source.startsWith('<!', lt) || source.startsWith('<?', lt)) {
       const end = source.indexOf('>', lt + 2);
       issue(lt, end < 0 ? source.length : end + 1, 'unsupported-markup', 'Snapshot 不支持此标记');
+      ignoredRanges.push({ start: lt, end: end < 0 ? source.length : end + 1, incomplete: end < 0 });
       i = end < 0 ? source.length : end + 1;
       continue;
     }
     let cursor = lt + 1;
     const closing = source[cursor] === '/';
     if (closing) cursor++;
-    const match = /^[A-Za-z][A-Za-z0-9:_-]*/.exec(source.slice(cursor));
+    namePattern.lastIndex = cursor;
+    const match = namePattern.exec(source);
     if (!match) {
+      if (cursor === source.length)
+        tags.push({
+          start: lt,
+          nameStart: cursor,
+          nameEnd: cursor,
+          end: cursor,
+          name: '',
+          closing,
+          incomplete: true,
+        });
       i = lt + 1;
       continue;
     }
@@ -124,10 +159,23 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
     }
     const incomplete = end >= source.length;
     const tagEnd = incomplete ? source.length : end + 1;
+    const token: TagToken = {
+      start: lt,
+      nameStart,
+      nameEnd: cursor,
+      end: tagEnd,
+      name,
+      closing,
+      incomplete,
+    };
+    tags.push(token);
     if (closing) {
       const found = stack.findLastIndex((node) => node.name === name);
       if (found >= 0) {
-        for (const node of stack.splice(found)) node.end = tagEnd;
+        for (const node of stack.splice(found)) {
+          node.end = tagEnd;
+          node.closed = !incomplete;
+        }
       } else issue(nameStart, cursor, 'unmatched-close', `未找到与 </${name}> 匹配的开始标签`, 2);
     } else {
       const selfClosing = /\/\s*>$/.test(source.slice(lt, tagEnd));
@@ -140,10 +188,12 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
         end: tagEnd,
         selfClosing,
         incomplete,
+        closed: selfClosing,
         attributes: parseAttributes(source, cursor, incomplete ? tagEnd : end),
         parent,
         children: [],
       };
+      token.element = node;
       elements.push(node);
       if (parent) parent.children.push(node);
       else roots.push(node);
@@ -182,11 +232,16 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
   if (roots.length > 1)
     for (const node of roots.slice(1)) issue(node.start, node.nameEnd, 'duplicate-root', '文档只能有一个根标签');
   for (const node of elements)
+    if (node.name === 'Snapshot' && !node.parent && node.closed && node.children.length === 0)
+      issue(node.start, node.nameEnd, 'empty-root', '<Snapshot> 必须包含一个子标签');
+  for (const node of elements)
     if (node.name === 'WidgetSpan' && !node.incomplete && node.children.length !== 1)
       issue(node.start, node.nameEnd, 'child-count', '<WidgetSpan> 必须包含一个子标签');
   return {
     elements,
     roots,
+    tags,
+    ignoredRanges,
     diagnostics: issues.map(({ start, end, code, message, severity }) => ({
       range: { start: document.positionAt(start), end: document.positionAt(end) },
       code,

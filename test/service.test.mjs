@@ -62,6 +62,47 @@ test('闭合标签补全包含结束尖括号且不会重复', () => {
   assert.equal(existingBracketCompletion.textEdit.newText, 'Text');
 });
 
+test('标签名中间补全会替换完整名称', () => {
+  const apply = (text, item) => {
+    const { start, end } = item.textEdit.range;
+    assert.equal(start.line, 0);
+    assert.equal(end.line, 0);
+    return text.slice(0, start.character) + item.textEdit.newText + text.slice(end.character);
+  };
+  const opening = '<Snapshot><Contaner/></Snapshot>';
+  const openItem = service
+    .completions(opening, { line: 0, character: opening.indexOf('Contaner') + 5 })
+    .find((item) => item.label === 'Container');
+  assert.equal(apply(opening, openItem), '<Snapshot><Container/></Snapshot>');
+
+  const closing = '<Snapshot><Text></Text>';
+  const closeItem = service.completions(closing, { line: 0, character: closing.indexOf('</Text>') + 4 })[0];
+  assert.equal(apply(closing, closeItem), closing);
+
+  const partial = '<Snapshot><Text></Te';
+  const partialItem = service.completions(partial, { line: 0, character: partial.length })[0];
+  assert.equal(apply(partial, partialItem), '<Snapshot><Text></Text>');
+});
+
+test('注释、CDATA 和属性值中不提供标签补全', () => {
+  const labelsAtEnd = (text) =>
+    service.completions(text, { line: 0, character: text.length }).map((item) => item.label);
+  assert.deepEqual(labelsAtEnd('<Snapshot><!-- </'), []);
+  assert.deepEqual(labelsAtEnd('<Snapshot><Text><![CDATA[</'), []);
+  assert.deepEqual(labelsAtEnd('<Snapshot><Container width="</'), []);
+  assert.deepEqual(labelsAtEnd('<Snapshot><Container width="<Co'), []);
+});
+
+test('已闭合的空 Snapshot 根节点报错，编辑中不提前报错', () => {
+  assert.ok(codes('<Snapshot/>').includes('empty-root'));
+  assert.ok(codes('<Snapshot></Snapshot>').includes('empty-root'));
+  assert.ok(codes('<Snapshot><!-- 注释 --></Snapshot>').includes('empty-root'));
+  assert.ok(!codes('<Snapshot>').includes('empty-root'));
+  assert.ok(!codes('<Snapshot></Snapshot').includes('empty-root'));
+  assert.ok(!codes('<Snapshot><Text/></Snapshot>').includes('empty-root'));
+  assert.ok(!codes('<Snapshot><Snapshot/></Snapshot>').includes('empty-root'));
+});
+
 test('悬停信息与独立扩展目录', () => {
   const hover = service.hover('<Snapshot><Container width="10"/></Snapshot>', { line: 0, character: 23 });
   assert.match(hover.contents.value, /Container\.width/);
