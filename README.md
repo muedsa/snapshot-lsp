@@ -4,13 +4,15 @@ Snapshot 类 DOM DSL 的通用 TypeScript 语言服务。核心不依赖编辑�
 
 ## 功能
 
-- 覆盖 Snapshot `parser` 默认注册的 38 个标签及其属性。
+- 覆盖 Snapshot `parser` 默认注册的 39 个标签及其属性，包括支持 SVG 路径裁剪的 `<ClipPath>`。
 - 标签、属性、枚举值、闭合标签补全与悬停说明。
 - 未知标签/属性、重复属性、必填属性、基本取值、根节点、父子关系和子节点数量诊断。
 - 颜色属性支持 Snapshot parser 的 CSS 颜色语法：`#RGB`、`#RGBA`、`#RRGGBB`、`#RRGGBBAA`、命名颜色、`transparent` 及 `rgb()`/`rgba()`/`hsl()`/`hsla()`。
 - 编辑中的不完整标签可继续补全；可通过 `SnapshotLanguageService` 扩展标签目录。
 
 目录和 CSS 命名颜色分别固化于 `src/catalog.generated.json`、`src/css-color-names.generated.json`，运行时无需 Java/Kotlin 或 Snapshot 仓库。语言服务只做静态检查；图片解码、布局渲染以及复杂属性间约束仍由 Snapshot 解析器负责。
+
+`<ClipPath>` 提供 `path` 必填提示、`viewBox` 格式检查和 `fit`、`fillRule`、`clipBehavior` 枚举补全。SVG 路径命令的完整语法与坐标有效性由 Snapshot parser 在解析时检查。
 
 ## 开发
 

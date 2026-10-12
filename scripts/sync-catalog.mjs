@@ -188,7 +188,7 @@ for (const cls of classes) {
     ),
   };
 }
-if (Object.keys(tags).length !== 38) throw new Error(`标签数量异常: ${Object.keys(tags).length}`);
+if (Object.keys(tags).length !== 39) throw new Error(`标签数量异常: ${Object.keys(tags).length}`);
 writeFileSync(resolve('src/catalog.generated.json'), JSON.stringify(tags, null, 2) + '\n');
 const cssColorSource = read('attr/CssColorParser.kt');
 const namedColorBlock = cssColorSource.match(/private val namedColors:[\s\S]*?= """([\s\S]*?)"""\.trimIndent\(\)/)?.[1];

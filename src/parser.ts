@@ -47,6 +47,19 @@ export interface ParseResult {
   diagnostics: Diagnostic[];
 }
 type Issue = { start: number; end: number; message: string; severity?: 1 | 2; code: string };
+const viewBoxNumber = '[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?';
+const viewBoxSpace = '[ \\t\\r\\n]';
+const viewBoxSeparator = `(?:${viewBoxSpace}+|${viewBoxSpace}*,${viewBoxSpace}*)`;
+const viewBoxPattern = new RegExp(
+  `^${viewBoxSpace}*(${viewBoxNumber})${viewBoxSeparator}(${viewBoxNumber})${viewBoxSeparator}(${viewBoxNumber})${viewBoxSeparator}(${viewBoxNumber})${viewBoxSpace}*$`,
+);
+
+function validViewBox(value: string): boolean {
+  const match = viewBoxPattern.exec(value);
+  if (!match) return false;
+  const numbers = match.slice(1).map((text) => Math.fround(Number(text)));
+  return numbers.every(Number.isFinite) && numbers[2] > 0 && numbers[3] > 0;
+}
 
 function parseAttributes(source: string, from: number, to: number): AttributeNode[] {
   const attrs: AttributeNode[] = [];
@@ -267,12 +280,20 @@ function validateAttributes(
       issue(attr.start, attr.end, 'unknown-attribute', `<${node.name}> 不支持属性 ${attr.name}`, 2);
       continue;
     }
-    if (attr.value === undefined) continue;
+    if (attr.value === undefined) {
+      if (node.name === 'ClipPath' && !node.incomplete)
+        issue(attr.start, attr.end, 'missing-value', `<ClipPath> 属性 ${attr.name} 需要值`);
+      continue;
+    }
     const value = attr.value;
     const at = attr.valueStart ?? attr.start,
       until = attr.valueEnd ?? attr.end;
     if (definition.kind === 'color' && !isCssColor(value))
       issue(at, until, 'invalid-color', '颜色应为十六进制、命名颜色或 rgb()/hsl() 等支持的 CSS 颜色值');
+    if (node.name === 'ClipPath' && attr.name === 'path' && (!value.trim() || value.includes('\0')))
+      issue(at, until, 'invalid-path', 'SVG 路径不能为空或包含 NUL 字符');
+    if (node.name === 'ClipPath' && attr.name === 'viewBox' && !validViewBox(value))
+      issue(at, until, 'invalid-viewbox', 'viewBox 需要有限的 minX minY width height，且宽高必须大于 0');
     if (definition.kind === 'boolean' && !['true', 'false'].includes(value.toLowerCase()))
       issue(at, until, 'invalid-boolean', '建议使用 true 或 false；Snapshot 会把其他值解析为 false', 2);
     if (definition.kind === 'integer' && !/^[+-]?\d+$/.test(value)) issue(at, until, 'invalid-integer', '这里需要整数');

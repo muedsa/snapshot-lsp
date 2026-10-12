@@ -5,10 +5,55 @@ import { SnapshotLanguageService, tags } from '../dist/index.js';
 const service = new SnapshotLanguageService();
 const codes = (text) => service.diagnostics(text).map((d) => d.code);
 
-test('内置目录包含 Snapshot 默认注册的 38 个标签', () => {
-  assert.equal(Object.keys(tags).length, 38);
+test('内置目录包含 Snapshot 默认注册的 39 个标签', () => {
+  assert.equal(Object.keys(tags).length, 39);
   assert.equal(tags.Text.mode, 'multiple');
   assert.equal(tags.Image.mode, 'none');
+  assert.equal(tags.ClipPath.mode, 'single');
+  assert.equal(tags.ClipPath.attributes.path.required, true);
+});
+
+test('ClipPath 的标签、属性、枚举和闭合标签补全', () => {
+  const labels = (text) => service.completions(text, { line: 0, character: text.length }).map((item) => item.label);
+  assert.ok(labels('<Snapshot><Cli').includes('ClipPath'));
+  assert.ok(labels('<Snapshot><ClipPath pa').includes('path'));
+  assert.ok(labels('<Snapshot><ClipPath path="M0 0 H10 V10 Z" view').includes('viewBox'));
+  assert.deepEqual(labels('<Snapshot><ClipPath fit="CO'), ['CONTAIN']);
+  assert.deepEqual(labels('<Snapshot><ClipPath fillRule="EV'), ['EVEN_ODD']);
+  assert.ok(labels('<Snapshot><ClipPath clipBehavior="ANTI').includes('ANTI_ALIAS'));
+  assert.deepEqual(labels('<Snapshot><ClipPath path="M0 0 H10 V10 Z"><Container/></'), ['ClipPath']);
+  assert.deepEqual(labels('<Snapshot><ClipPath path="M0 0 H10 V10 Z"><Container/><'), []);
+  const sample = '<Snapshot><ClipPath path="M0 0 H10 V10 Z"/>';
+  assert.match(
+    service.hover(sample, { line: 0, character: sample.indexOf('ClipPath') + 2 }).contents.value,
+    /SVG 路径/,
+  );
+  assert.match(service.hover(sample, { line: 0, character: sample.indexOf('path') + 2 }).contents.value, /必填/);
+});
+
+test('ClipPath 的必填路径、viewBox、枚举和子节点诊断', () => {
+  const valid =
+    '<Snapshot><ClipPath path="M0 0 H10 V10 Z" viewBox="0, 0, 1e1, 10." fit="CONTAIN" fillRule="EVEN_ODD" clipBehavior="ANTI_ALIAS"><Container/></ClipPath></Snapshot>';
+  assert.deepEqual(codes(valid), []);
+  assert.ok(codes('<Snapshot><ClipPath/></Snapshot>').includes('missing-attribute'));
+  assert.ok(codes('<Snapshot><ClipPath path/></Snapshot>').includes('missing-value'));
+  assert.ok(codes('<Snapshot><ClipPath path="  "/></Snapshot>').includes('invalid-path'));
+  assert.ok(codes('<Snapshot><ClipPath path="M0 0\0Z"/></Snapshot>').includes('invalid-path'));
+  for (const viewBox of ['0 0 0 10', '0 0 10 -1', '0 0 NaN 10', '0 0 1e100 10', '0,,0,10,10', '0 0 10 10,'])
+    assert.ok(
+      codes(`<Snapshot><ClipPath path="M0 0 H10 V10 Z" viewBox="${viewBox}"/></Snapshot>`).includes('invalid-viewbox'),
+      viewBox,
+    );
+  for (const attribute of ['fit="COVER"', 'fillRule="INVERSE_EVEN_ODD"', 'clipBehavior="SOFT"'])
+    assert.ok(
+      codes(`<Snapshot><ClipPath path="M0 0 H10 V10 Z" ${attribute}/></Snapshot>`).includes('invalid-value'),
+      attribute,
+    );
+  assert.ok(
+    codes('<Snapshot><ClipPath path="M0 0 H10 V10 Z"><SizedBox/><SizedBox/></ClipPath></Snapshot>').includes(
+      'child-count',
+    ),
+  );
 });
 
 test('有效样例与 CDATA、注释不产生诊断', () => {

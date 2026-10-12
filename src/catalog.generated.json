@@ -803,6 +803,28 @@
       }
     }
   },
+  "ClipPath": {
+    "mode": "single",
+    "description": "用 SVG 路径数据裁剪，可缩放到自身尺寸并支持镂空",
+    "attributes": {
+      "clipBehavior": {
+        "kind": "string"
+      },
+      "fillRule": {
+        "kind": "string"
+      },
+      "fit": {
+        "kind": "string"
+      },
+      "path": {
+        "kind": "string",
+        "required": true
+      },
+      "viewBox": {
+        "kind": "string"
+      }
+    }
+  },
   "ColorFiltered": {
     "mode": "single",
     "description": "颜色滤镜",

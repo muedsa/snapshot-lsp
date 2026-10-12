@@ -57,6 +57,8 @@ for (const name of ['Image', 'Emoji'])
   tags[name].attributes.fit.values = ['FILL', 'CONTAIN', 'COVER', 'FIT_WIDTH', 'FIT_HEIGHT', 'NONE', 'SCALE_DOWN'];
 for (const name of ['Stack', 'IndexedStack']) tags[name].attributes.fit.values = ['LOOSE', 'EXPAND', 'PASSTHROUGH'];
 tags.Flexible.attributes.fit.values = ['LOOSE', 'TIGHT'];
+tags.ClipPath.attributes.fit.values = ['FILL', 'CONTAIN'];
+tags.ClipPath.attributes.fillRule.values = ['NON_ZERO', 'EVEN_ODD'];
 tags.Flex.attributes.direction = { kind: 'string', required: true, values: ['HORIZONTAL', 'VERTICAL'] };
 tags.Snapshot.attributes.type.values = values.type;
 
