@@ -19,10 +19,12 @@
     "description": "瑞士军刀：尺寸 + 内边距 + 外边距 + 底色/装饰 + 对齐 + 裁剪 + 变换",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "backgroundBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "border": {
         "kind": "string"
@@ -58,13 +60,15 @@
         "kind": "string"
       },
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "color": {
         "kind": "color"
       },
       "foregroundBackgroundBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "foregroundBorder": {
         "kind": "string"
@@ -103,22 +107,26 @@
         "kind": "color"
       },
       "foregroundGradientBegin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "foregroundGradientCenter": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "foregroundGradientColors": {
         "kind": "string"
       },
       "foregroundGradientEnd": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "foregroundGradientEndAngle": {
         "kind": "number"
       },
       "foregroundGradientFocal": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "foregroundGradientFocalRadius": {
         "kind": "number"
@@ -136,31 +144,38 @@
         "kind": "string"
       },
       "foregroundGradientTileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       },
       "foregroundGradientType": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "GradientType"
       },
       "foregroundShape": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxShape"
       },
       "gradientBegin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientCenter": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientColors": {
         "kind": "string"
       },
       "gradientEnd": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -178,10 +193,12 @@
         "kind": "string"
       },
       "gradientTileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       },
       "gradientType": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "GradientType"
       },
       "height": {
         "kind": "number"
@@ -205,13 +222,15 @@
         "kind": "string"
       },
       "shape": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxShape"
       },
       "transform": {
         "kind": "string"
       },
       "transformAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "width": {
         "kind": "number"
@@ -223,7 +242,8 @@
     "description": "`Border(top = BorderSide.NONE, right = …, bottom = …, left = …)`（注意参数顺序是 **top, right, bottom, left**）/ `Border.all(color, width, style)` / `Border.symmetric(vertical, horizontal)`；`BoxBorder` 是抽象基类",
     "attributes": {
       "backgroundBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "border": {
         "kind": "string"
@@ -262,22 +282,26 @@
         "kind": "color"
       },
       "gradientBegin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientCenter": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientColors": {
         "kind": "string"
       },
       "gradientEnd": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -295,13 +319,16 @@
         "kind": "string"
       },
       "gradientTileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       },
       "gradientType": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "GradientType"
       },
       "shape": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxShape"
       }
     }
   },
@@ -320,7 +347,8 @@
     "description": "背景/前景装饰（边框、圆角、阴影、渐变、图片）",
     "attributes": {
       "backgroundBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "border": {
         "kind": "string"
@@ -359,22 +387,26 @@
         "kind": "color"
       },
       "gradientBegin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientCenter": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientColors": {
         "kind": "string"
       },
       "gradientEnd": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -392,16 +424,20 @@
         "kind": "string"
       },
       "gradientTileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       },
       "gradientType": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "GradientType"
       },
       "position": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "DecorationPosition"
       },
       "shape": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxShape"
       }
     }
   },
@@ -410,29 +446,37 @@
     "description": "通过必填的 `direction` 选择水平或垂直主轴",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "crossAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "CrossAxisAlignment"
       },
       "direction": {
         "kind": "string",
-        "required": true
+        "required": true,
+        "valueType": "Axis"
       },
       "mainAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisAlignment"
       },
       "mainAxisSize": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisSize"
       },
       "textBaseline": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       },
       "verticalDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "VerticalDirection"
       }
     }
   },
@@ -441,25 +485,32 @@
     "description": "",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "crossAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "CrossAxisAlignment"
       },
       "mainAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisAlignment"
       },
       "mainAxisSize": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisSize"
       },
       "textBaseline": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       },
       "verticalDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "VerticalDirection"
       }
     }
   },
@@ -468,25 +519,32 @@
     "description": "",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "crossAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "CrossAxisAlignment"
       },
       "mainAxisAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisAlignment"
       },
       "mainAxisSize": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "MainAxisSize"
       },
       "textBaseline": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       },
       "verticalDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "VerticalDirection"
       }
     }
   },
@@ -504,7 +562,8 @@
     "description": "只能作为 `Flex` / `Row` / `Column` 的直接子节点",
     "attributes": {
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FlexFit"
       },
       "flex": {
         "kind": "integer"
@@ -525,16 +584,20 @@
     "description": "层叠布局",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "StackFit"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       }
     }
   },
@@ -543,19 +606,23 @@
     "description": "布局全部子节点，只绘制指定索引的子节点",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "StackFit"
       },
       "index": {
         "kind": "integer"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       }
     }
   },
@@ -610,7 +677,8 @@
     "description": "按父约束最大宽高的比例设置子节点尺寸",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "heightFactor": {
         "kind": "number"
@@ -625,10 +693,12 @@
     "description": "解除子节点一个或两个方向的父约束，自身仍遵守父约束",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "constrainedAxis": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Axis"
       }
     }
   },
@@ -667,7 +737,8 @@
     "description": "给子节点不同于自己的约束（可溢出）",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "maxHeight": {
         "kind": "number"
@@ -688,7 +759,8 @@
     "description": "自身按指定尺寸、子节点按父约束（可溢出）",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "height": {
         "kind": "number",
@@ -714,7 +786,8 @@
     "description": "对齐子节点，可按比例包裹",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "heightFactor": {
         "kind": "number"
@@ -750,7 +823,8 @@
     "description": "仿射变换（旋转/平移/自定义矩阵）",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "matrix": {
         "kind": "string",
@@ -766,7 +840,8 @@
     "description": "按自身矩形范围裁剪子节点",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       }
     }
   },
@@ -775,7 +850,8 @@
     "description": "按自身内接椭圆裁剪子节点",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       }
     }
   },
@@ -799,7 +875,8 @@
         "kind": "string"
       },
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       }
     }
   },
@@ -808,7 +885,8 @@
     "description": "用 SVG 路径数据裁剪，可缩放到自身尺寸并支持镂空",
     "attributes": {
       "clipBehavior": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ClipBehavior"
       },
       "fillRule": {
         "kind": "string"
@@ -831,7 +909,8 @@
     "attributes": {
       "blendMode": {
         "kind": "string",
-        "required": true
+        "required": true,
+        "valueType": "BlendMode"
       },
       "color": {
         "kind": "color",
@@ -852,7 +931,8 @@
         "required": true
       },
       "tileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       }
     }
   },
@@ -861,7 +941,8 @@
     "description": "背景滤镜（模糊下层已绘制内容）",
     "attributes": {
       "blendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "sigmaX": {
         "kind": "number",
@@ -872,7 +953,8 @@
         "required": true
       },
       "tileMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FilterTileMode"
       }
     }
   },
@@ -881,19 +963,22 @@
     "description": "`url` 网络图，或 `dataUri` 内嵌图片",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "color": {
         "kind": "color"
       },
       "colorBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "dataUri": {
         "kind": "string"
       },
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxFit"
       },
       "height": {
         "kind": "number"
@@ -905,7 +990,8 @@
         "kind": "number"
       },
       "repeat": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ImageRepeat"
       },
       "scale": {
         "kind": "number"
@@ -923,10 +1009,11 @@
     "description": "单样式文本",
     "attributes": {
       "backgroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "baselineMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "color": {
         "kind": "color"
@@ -935,19 +1022,21 @@
         "kind": "string"
       },
       "decorationColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "decorationGaps": {
         "kind": "boolean"
       },
       "decorationLineStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "DecorationLineStyle"
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontEdging"
       },
       "fontFamily": {
         "kind": "string"
@@ -956,28 +1045,33 @@
         "kind": "string"
       },
       "fontHinting": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontHinting"
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontStyle"
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
       },
       "foregroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "foregroundMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintMode"
       },
       "foregroundStrokeCap": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeCap"
       },
       "foregroundStrokeJoin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeJoin"
       },
       "foregroundStrokeMiter": {
         "kind": "number"
@@ -998,7 +1092,8 @@
         "kind": "integer"
       },
       "overflow": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "TextOverflow"
       },
       "softWrap": {
         "kind": "boolean"
@@ -1013,7 +1108,8 @@
         "kind": "number"
       },
       "strutFontStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontStyle"
       },
       "strutHeight": {
         "kind": "number"
@@ -1034,19 +1130,23 @@
         "kind": "string"
       },
       "textAlign": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ParagraphAlignment"
       },
       "textDirection": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "Direction"
       },
       "textHeightMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "HeightMode"
       },
       "textShadow": {
         "kind": "string"
       },
       "textWidthBasis": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "TextWidthBasis"
       },
       "topRatio": {
         "kind": "number"
@@ -1061,10 +1161,11 @@
     "description": "原样文本，**不 trim**",
     "attributes": {
       "backgroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "baselineMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "color": {
         "kind": "color"
@@ -1073,19 +1174,21 @@
         "kind": "string"
       },
       "decorationColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "decorationGaps": {
         "kind": "boolean"
       },
       "decorationLineStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "DecorationLineStyle"
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontEdging"
       },
       "fontFamily": {
         "kind": "string"
@@ -1094,28 +1197,33 @@
         "kind": "string"
       },
       "fontHinting": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontHinting"
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontStyle"
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
       },
       "foregroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "foregroundMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintMode"
       },
       "foregroundStrokeCap": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeCap"
       },
       "foregroundStrokeJoin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeJoin"
       },
       "foregroundStrokeMiter": {
         "kind": "number"
@@ -1154,34 +1262,40 @@
     "description": "`url` 网络图或 `dataUri` 内嵌图片；只能作为 `Text` 的子节点",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PlaceholderAlignment"
       },
       "baseline": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "color": {
         "kind": "color"
       },
       "colorBlendMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BlendMode"
       },
       "dataUri": {
         "kind": "string"
       },
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxFit"
       },
       "height": {
         "kind": "number"
       },
       "imageAlignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BoxAlignment"
       },
       "opacity": {
         "kind": "number"
       },
       "repeat": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "ImageRepeat"
       },
       "scale": {
         "kind": "number"
@@ -1199,16 +1313,19 @@
     "description": "把一个普通 Widget 嵌入文本，只能作为 `Text` 的子节点",
     "attributes": {
       "alignment": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PlaceholderAlignment"
       },
       "backgroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "baseline": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "baselineMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "BaselineMode"
       },
       "color": {
         "kind": "color"
@@ -1217,19 +1334,21 @@
         "kind": "string"
       },
       "decorationColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "decorationGaps": {
         "kind": "boolean"
       },
       "decorationLineStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "DecorationLineStyle"
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontEdging"
       },
       "fontFamily": {
         "kind": "string"
@@ -1238,28 +1357,33 @@
         "kind": "string"
       },
       "fontHinting": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontHinting"
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "FontStyle"
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
       },
       "foregroundColor": {
-        "kind": "string"
+        "kind": "color"
       },
       "foregroundMode": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintMode"
       },
       "foregroundStrokeCap": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeCap"
       },
       "foregroundStrokeJoin": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "PaintStrokeJoin"
       },
       "foregroundStrokeMiter": {
         "kind": "number"

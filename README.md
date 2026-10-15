@@ -12,9 +12,13 @@ Snapshot 类 DOM DSL 的通用 TypeScript 语言服务。核心不依赖编辑�
 
 补全支持在名称中间替换标签和属性名，修改已有属性名时保留原赋值；闭合标签候选取当前位置仍打开的父节点，并补齐缺少的 `>`。空标签名和紧邻后续标签的不完整标签也可继续补全，注释、CDATA 和属性值内不会误插入标签或属性名。
 
-枚举补全包含 `textDirection`、Emoji/WidgetSpan 的占位符 `alignment`、平铺模式和混合模式，以及 `gradientTileMode`、`foregroundGradientTileMode`、`backgroundBlendMode`、`foregroundBackgroundBlendMode`、`colorBlendMode` 等同类型属性。
+枚举补全包含方向、对齐、图片重复、装饰位置、平铺、混合、文本宽高、基线、字体和画笔模式等类型，并覆盖前景、渐变、strut 等属性别名。枚举补全与诊断共享值域；`BoxAlignment` 额外支持 Parser 的坐标语法，如 `(-.5,+0.25)`。
 
-目录和 CSS 命名颜色分别固化于 `src/catalog.generated.json`、`src/css-color-names.generated.json`，运行时无需 Java/Kotlin 或 Snapshot 仓库。语言服务只做静态检查；图片解码、布局渲染以及复杂属性间约束仍由 Snapshot 解析器负责。
+目录和 CSS 命名颜色分别固化于 `src/catalog.generated.json`、`src/css-color-names.generated.json`，枚举值域集中维护于 `src/value-types.json`，运行时无需 Java/Kotlin 或 Snapshot 仓库。目录保留 `copyWith` 属性别名的类型，因此文本前景色、背景色和装饰颜色均使用 CSS 颜色校验。语言服务只做静态检查；图片解码、布局渲染以及复杂属性间约束仍由 Snapshot 解析器负责。
+
+完整标签的必填属性只有名称而没有值时会提示缺值；编辑中的未完成标签保持容错。`Raw` 内可以继续嵌套 `WidgetSpan`，与 Snapshot 的行内文本解析规则一致。
+
+无引号属性值可以包含 URL 或路径中的 `/`。与 Snapshot tokenizer 一致，自闭合标记需与无引号值用空白分隔，例如 `<Image url=https://example.com/a.png />`；`text=a/b/>` 中末尾的 `/` 仍属于属性值。使用引号时可以直接写 `text="a/b"/>`。
 
 `<ClipPath>` 提供 `path` 必填提示、`viewBox` 格式检查和 `fit`、`fillRule`、`clipBehavior` 枚举补全。SVG 路径命令的完整语法与坐标有效性由 Snapshot parser 在解析时检查。
 
@@ -30,7 +34,7 @@ pnpm run build
 node dist/node.js --stdio
 ```
 
-更新 Snapshot 源码后，从本仓库执行 `pnpm run sync:catalog`。默认读取同级 `../snapshot`；也可执行 `node scripts/sync-catalog.mjs <snapshot 仓库路径>`。更新后运行测试，核对新属性的类型与取值规则。
+更新 Snapshot 源码后，从本仓库执行 `pnpm run sync:catalog`。默认读取同级 `../snapshot`；也可执行 `node scripts/sync-catalog.mjs <snapshot 仓库路径>`。生成器解析属性定义及其 `copyWith` 引用，将命名值域记录在 `valueType` 中；遇到无法解析的别名引用会报错。更新后运行测试，核对新属性的类型与取值规则；新增枚举类型时同步更新 `src/value-types.json`。
 
 ## 集成
 
@@ -69,7 +73,11 @@ const attributes = service.completions('<Snapshot><Container wi', { line: 0, cha
 
 `completions(text, position, uri?, options?)` 的 `options` 类型为导出的 `CompletionOptions`。直接调用核心时，`snippetSupport` 默认 `true`，保持已有集成的行为；通过 LSP 连接时由服务端按客户端能力设置。
 
+宿主接受补全时需同时应用 `textEdit` 和可选的 `additionalTextEdits`。多行属性值的补全会使用单行主编辑和不重叠的额外编辑替换整个值，保留引号及周围文档内容。
+
 扩展标签时向构造函数传入 `{ Custom: { mode: 'none', description: '...', attributes: { title: { kind: 'string' } } } }`。目录只描述静态语法，宿主仍需在 Snapshot 的 `WidgetParserManager` 中注册对应解析器。
+
+自定义属性可通过 `valueType` 复用内置值域，例如 `{ kind: 'string', valueType: 'PaintMode' }`；类型名由导出的 `ValueType` 约束，也可用 `values` 显式指定候选。目录查询仅访问自身条目，`constructor`、`toString` 等名称只有显式注册后才被识别。
 
 ## 发布到 GitHub Packages
 

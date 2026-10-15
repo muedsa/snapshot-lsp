@@ -212,8 +212,8 @@ test('方向、占位符、平铺和混合模式补全覆盖同类型别名', ()
   }
   assert.equal(apply('<Snapshot><Text textDirection="R|TL"/>', 'RTL'), '<Snapshot><Text textDirection="RTL"/>');
   assert.equal(
-    apply('<Snapshot><BackdropFilter tileMode=DE|CAL/>', 'DECAL'),
-    '<Snapshot><BackdropFilter tileMode=DECAL/>',
+    apply('<Snapshot><BackdropFilter tileMode=DE|CAL />', 'DECAL'),
+    '<Snapshot><BackdropFilter tileMode=DECAL />',
   );
   assert.equal(
     apply("<Snapshot><ColorFiltered blendMode='SRC_|OVER'/>", 'SRC_OVER'),

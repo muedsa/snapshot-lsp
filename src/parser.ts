@@ -2,6 +2,7 @@ import type { Diagnostic } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TagSpec } from './catalog.js';
 import { isCssColor } from './css-color.js';
+import { own } from './lookup.js';
 
 export interface AttributeNode {
   name: string;
@@ -65,12 +66,21 @@ function validViewBox(value: string): boolean {
   return numbers.every(Number.isFinite) && numbers[2] > 0 && numbers[3] > 0;
 }
 
-function parseAttributes(source: string, from: number, to: number): AttributeNode[] {
+function parseAttributes(
+  source: string,
+  from: number,
+  to: number,
+): { attributes: AttributeNode[]; selfClosing: boolean } {
   const attrs: AttributeNode[] = [];
   let i = from;
+  let selfClosing = false;
   while (i < to) {
     while (i < to && /\s/.test(source[i])) i++;
-    if (i >= to || source[i] === '/') break;
+    if (i >= to) break;
+    if (source[i] === '/') {
+      selfClosing = source[to] === '>' && /^\/\s*$/.test(source.slice(i, to));
+      break;
+    }
     const start = i;
     while (i < to && !/[\s=/>]/.test(source[i])) i++;
     if (i === start) {
@@ -91,13 +101,14 @@ function parseAttributes(source: string, from: number, to: number): AttributeNod
     if (quote) {
       while (i < to && source[i] !== quote) i++;
     } else {
-      while (i < to && !/[\s/>]/.test(source[i])) i++;
+      // Snapshot 的无引号值允许 /；只有值外的 / 才表示自闭合。
+      while (i < to && !/[\s>]/.test(source[i])) i++;
     }
     const valueEnd = i;
     if (quote && source[i] === quote) i++;
     attrs.push({ name, start, end, syntaxEnd: i, value: source.slice(valueStart, valueEnd), valueStart, valueEnd });
   }
-  return attrs;
+  return { attributes: attrs, selfClosing };
 }
 
 /** 容错扫描器：保留未完成标签，供编辑期间补全使用。 */
@@ -192,7 +203,7 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
         }
       } else issue(nameStart, cursor, 'unmatched-close', `未找到与 </${name}> 匹配的开始标签`, 2);
     } else {
-      const selfClosing = /\/\s*>$/.test(source.slice(lt, tagEnd));
+      const { attributes, selfClosing } = parseAttributes(source, cursor, end);
       const parent = stack.at(-1);
       const node: ElementNode = {
         name,
@@ -203,7 +214,7 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
         selfClosing,
         incomplete,
         closed: selfClosing,
-        attributes: parseAttributes(source, cursor, incomplete ? tagEnd : end),
+        attributes,
         parent,
         children: [],
       };
@@ -211,12 +222,12 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
       elements.push(node);
       if (parent) parent.children.push(node);
       else roots.push(node);
-      const spec = catalog[name];
+      const spec = own(catalog, name);
       if (!spec) issue(nameStart, cursor, 'unknown-tag', `未知标签 <${name}>`);
       if (!parent && name !== 'Snapshot') issue(nameStart, cursor, 'root-tag', '根标签必须为 Snapshot');
       if (parent) {
         if (name === 'Snapshot') issue(nameStart, cursor, 'root-tag', 'Snapshot 只能作为根标签');
-        const parentSpec = catalog[parent.name];
+        const parentSpec = own(catalog, parent.name);
         if (parentSpec?.mode === 'none' || (parentSpec?.mode === 'single' && parent.children.length > 1))
           issue(
             nameStart,
@@ -228,10 +239,8 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
           issue(nameStart, cursor, 'invalid-parent', `<${name}> 只能直接位于 Flex、Row 或 Column 下`);
         if (name === 'Positioned' && !['Stack', 'IndexedStack'].includes(parent.name))
           issue(nameStart, cursor, 'invalid-parent', '<Positioned> 只能直接位于 Stack 或 IndexedStack 下');
-        if (['Raw', 'Emoji'].includes(name) && !['Text', 'Raw'].includes(parent.name))
+        if (['Raw', 'Emoji', 'WidgetSpan'].includes(name) && !['Text', 'Raw'].includes(parent.name))
           issue(nameStart, cursor, 'invalid-parent', `<${name}> 只能位于文本内容中`);
-        if (name === 'WidgetSpan' && parent.name !== 'Text')
-          issue(nameStart, cursor, 'invalid-parent', '<WidgetSpan> 只能作为 Text 的子节点');
         if (['Text', 'Raw'].includes(parent.name) && !['Text', 'Raw', 'Emoji', 'WidgetSpan'].includes(name))
           issue(nameStart, cursor, 'invalid-child', `<${parent.name}> 只能包含行内文本标签`);
       }
@@ -275,14 +284,19 @@ function validateAttributes(
   for (const attr of node.attributes) {
     if (seen.has(attr.name)) issue(attr.start, attr.end, 'duplicate-attribute', `属性 ${attr.name} 重复`);
     seen.add(attr.name);
-    const definition = spec.attributes[attr.name];
+    const definition = own(spec.attributes, attr.name);
     if (!definition) {
       issue(attr.start, attr.end, 'unknown-attribute', `<${node.name}> 不支持属性 ${attr.name}`, 2);
       continue;
     }
     if (attr.value === undefined) {
-      if (node.name === 'ClipPath' && !node.incomplete)
-        issue(attr.start, attr.end, 'missing-value', `<ClipPath> 属性 ${attr.name} 需要值`);
+      if (
+        !node.incomplete &&
+        (definition.required ||
+          node.name === 'ClipPath' ||
+          (['Image', 'Emoji'].includes(node.name) && ['url', 'dataUri'].includes(attr.name)))
+      )
+        issue(attr.start, attr.end, 'missing-value', `<${node.name}> 属性 ${attr.name} 需要值`);
       continue;
     }
     const value = attr.value;
@@ -303,7 +317,7 @@ function validateAttributes(
       definition.kind !== 'boolean' &&
       definition.values?.length &&
       !definition.values.includes(value) &&
-      !(attr.name.endsWith('Alignment') || attr.name === 'alignment')
+      !(definition.valueType === 'BoxAlignment' && /^\([+-]?(?:\d*\.)?\d+,[+-]?(?:\d*\.)?\d+\)$/.test(value))
     )
       issue(at, until, 'invalid-value', `可选值：${definition.values.join('、')}`);
   }

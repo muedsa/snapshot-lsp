@@ -1,7 +1,8 @@
-import type { CompletionItem, Diagnostic, Hover, Position, Range } from 'vscode-languageserver';
+import type { CompletionItem, Diagnostic, Hover, Position, Range, TextEdit } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { createCatalog, type TagSpec } from './catalog.js';
 import { parseDocument, type ParseResult } from './parser.js';
+import { own } from './lookup.js';
 
 interface Analysis {
   text: string;
@@ -76,12 +77,14 @@ export class SnapshotLanguageService {
     }
     if (offset <= token.nameEnd) {
       const parent = token.parent;
+      const parentSpec = parent && own(this.catalog, parent.name);
       if (
         parent &&
-        (this.catalog[parent.name]?.mode === 'none' ||
-          (this.catalog[parent.name]?.mode === 'single' && parent.children.some((child) => child.start < token.start)))
+        (parentSpec?.mode === 'none' ||
+          (parentSpec?.mode === 'single' && parent.children.some((child) => child !== token.element)))
       )
         return [];
+      if (!parent && parsed.roots.some((root) => root !== token.element)) return [];
       const allowed = parent
         ? Object.keys(this.catalog).filter((name) => allowedChild(parent.name, name))
         : ['Snapshot'];
@@ -97,19 +100,33 @@ export class SnapshotLanguageService {
     }
     const tag = token.element;
     if (!tag) return [];
-    const spec = this.catalog[tag.name];
+    const spec = own(this.catalog, tag.name);
     if (!spec) return [];
     const valueAttr = tag.attributes.find(
       (a) => a.valueStart !== undefined && a.valueStart <= offset && offset <= (a.valueEnd ?? -1),
     );
     if (valueAttr) {
-      const prefix = text.slice(valueAttr.valueStart, offset);
-      return (spec.attributes[valueAttr.name]?.values ?? [])
-        .filter((value) => value.startsWith(prefix))
+      const valueStart = valueAttr.valueStart!,
+        valueEnd = valueAttr.valueEnd!;
+      const line = document.positionAt(offset).line;
+      const editStart = Math.max(valueStart, document.offsetAt({ line, character: 0 }));
+      let editEnd = Math.min(valueEnd, document.offsetAt({ line: line + 1, character: 0 }));
+      while (editEnd > editStart && /[\r\n]/.test(text[editEnd - 1])) editEnd--;
+      const multiline = document.positionAt(valueStart).line !== document.positionAt(valueEnd).line;
+      const prefix = text.slice(editStart, offset);
+      // LSP 的主补全编辑必须在当前行，其余值内容由不重叠的额外编辑删除。
+      const additionalTextEdits: TextEdit[] = [];
+      if (valueStart < editStart)
+        additionalTextEdits.push({ range: replaceRange(document, valueStart, editStart), newText: '' });
+      if (editEnd < valueEnd)
+        additionalTextEdits.push({ range: replaceRange(document, editEnd, valueEnd), newText: '' });
+      return (own(spec.attributes, valueAttr.name)?.values ?? [])
+        .filter((value) => value.startsWith(multiline ? prefix.trimStart() : prefix))
         .map((value) => ({
           label: value,
           kind: 12,
-          textEdit: { range: replaceRange(document, valueAttr.valueStart!, valueAttr.valueEnd!), newText: value },
+          textEdit: { range: replaceRange(document, editStart, editEnd), newText: value },
+          ...(additionalTextEdits.length ? { additionalTextEdits } : {}),
         }));
     }
     const editingName = tag.attributes.find((attr) => attr.start <= offset && offset <= attr.end);
@@ -144,17 +161,19 @@ export class SnapshotLanguageService {
     const offset = document.offsetAt(position);
     const elements = parsed.elements;
     const node = elements.find((n) => n.start + 1 <= offset && offset <= n.nameEnd);
-    if (node && this.catalog[node.name])
+    const nodeSpec = node && own(this.catalog, node.name);
+    if (node && nodeSpec)
       return {
         contents: {
           kind: 'markdown',
-          value: `**<${node.name}>**\n\n${this.catalog[node.name].description || 'Snapshot 标签'}`,
+          value: `**<${node.name}>**\n\n${nodeSpec.description || 'Snapshot 标签'}`,
         },
         range: replaceRange(document, node.start + 1, node.nameEnd),
       };
     for (const tag of elements) {
       const attr = tag.attributes.find((a) => a.start <= offset && offset <= a.end);
-      const spec = attr && this.catalog[tag.name]?.attributes[attr.name];
+      const tagSpec = own(this.catalog, tag.name);
+      const spec = attr && tagSpec && own(tagSpec.attributes, attr.name);
       if (attr && spec)
         return {
           contents: {

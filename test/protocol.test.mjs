@@ -139,3 +139,72 @@ for (const snippetSupport of [true, false, undefined]) {
     send({ jsonrpc: '2.0', method: 'exit' });
   });
 }
+
+test('stdio 对原型名称提供诊断，增量修正后恢复，并返回合法多行值补全', async (t) => {
+  const { request, send, waitFor } = startServer(t);
+  await request('initialize', { processId: process.pid, rootUri: null, capabilities: {} });
+  send({ jsonrpc: '2.0', method: 'initialized', params: {} });
+  const uri = 'file:///audit-protocol.snapshot';
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didOpen',
+    params: {
+      textDocument: {
+        uri,
+        languageId: 'snapshot',
+        version: 1,
+        text: '<Snapshot><constructor/></Snapshot>',
+      },
+    },
+  });
+  const diagnostic = (version) =>
+    waitFor(
+      (m) => m.method === 'textDocument/publishDiagnostics' && m.params.uri === uri && m.params.version === version,
+    );
+  assert.ok((await diagnostic(1)).params.diagnostics.some((d) => d.code === 'unknown-tag'));
+  const first = await request('textDocument/completion', {
+    textDocument: { uri },
+    position: { line: 0, character: 12 },
+  });
+  assert.ok(Array.isArray(first.result));
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didChange',
+    params: {
+      textDocument: { uri, version: 2 },
+      contentChanges: [
+        {
+          range: { start: { line: 0, character: 11 }, end: { line: 0, character: 22 } },
+          text: 'Text',
+        },
+      ],
+    },
+  });
+  assert.deepEqual((await diagnostic(2)).params.diagnostics, []);
+  const text = '<Snapshot><Text text="中文😀" textDirection="\r\nR\r\n"/></Snapshot>';
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didChange',
+    params: {
+      textDocument: { uri, version: 3 },
+      contentChanges: [{ text }],
+    },
+  });
+  await diagnostic(3);
+  const response = await request('textDocument/completion', {
+    textDocument: { uri },
+    position: { line: 1, character: 1 },
+  });
+  const item = response.result.find((i) => i.label === 'RTL');
+  assert.equal(item.textEdit.range.start.line, 1);
+  assert.equal(item.textEdit.range.end.line, 1);
+  assert.equal(
+    TextDocument.applyEdits(TextDocument.create(uri, 'snapshot', 3, text), [
+      item.textEdit,
+      ...item.additionalTextEdits,
+    ]),
+    '<Snapshot><Text text="中文😀" textDirection="RTL"/></Snapshot>',
+  );
+  await request('shutdown', null);
+  send({ jsonrpc: '2.0', method: 'exit' });
+});

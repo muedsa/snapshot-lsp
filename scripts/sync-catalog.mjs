@@ -1,30 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { declarations } from './catalog-definitions.mjs';
 
 // 从 Snapshot 源码更新静态目录。运行时和发布的包不依赖 Snapshot 仓库。
 const snapshot = resolve(process.argv[2] ?? '../snapshot');
 const base = resolve(snapshot, 'parser/src/main/kotlin/com/muedsa/snapshot/parser');
 const read = (path) => readFileSync(resolve(base, path), 'utf8');
-const declarations = (source) => {
-  const result = new Map();
-  const blocks = source.split(/(?=^\s*(?:private\s+)?val\s+\w+)/m);
-  for (const block of blocks) {
-    const name = block.match(/^\s*(?:private\s+)?val\s+(\w+)/)?.[1];
-    if (!name) continue;
-    const value = block.match(/(?:AttrDefine|copyWith)\s*\(\s*(?:name\s*=\s*)?"([^"]+)"/)?.[1];
-    if (!value) continue;
-    const type = block.match(/(?:\w+\.)?(\w+AttrDefine)\s*\(/)?.[1] ?? 'StringAttrDefine';
-    result.set(name, { name: value, kind: kindOf(type), required: type.startsWith('Required') });
-  }
-  return result;
-};
-function kindOf(type) {
-  if (/Color(?!List)/.test(type)) return 'color';
-  if (/Boolean/.test(type)) return 'boolean';
-  if (/IntAttr/.test(type)) return 'integer';
-  if (/FloatAttr/.test(type)) return 'number';
-  return 'string';
-}
 const common = declarations(read('attr/CommonAttrDefine.kt'));
 const docs = readFileSync(resolve(snapshot, 'docs/usage/README.md'), 'utf8');
 const tagDocs = new Map();
@@ -43,17 +24,17 @@ for (const cls of classes) {
     ?.toLowerCase();
   if (!name || !mode) throw new Error(`无法读取 ${cls} 的标签声明`);
   const attrs = new Map();
-  for (const ref of source.matchAll(/CommonAttrDefine\.(\w+)(?:\.copyWith\s*\(\s*"([^"]+)")?/g)) {
+  for (const ref of source.matchAll(/CommonAttrDefine\.(\w+)(?:\.copyWith\s*\(\s*(?:name\s*=\s*)?"([^"]+)")?/g)) {
     const definition = common.get(ref[1]);
     if (definition) attrs.set(ref[2] ?? definition.name, { ...definition, name: ref[2] ?? definition.name });
   }
-  for (const definition of declarations(source).values()) attrs.set(definition.name, definition);
+  for (const definition of declarations(source, common).values()) attrs.set(definition.name, definition);
   if (inherited) {
-    for (const ref of inherited.matchAll(/CommonAttrDefine\.(\w+)(?:\.copyWith\s*\(\s*"([^"]+)")?/g)) {
+    for (const ref of inherited.matchAll(/CommonAttrDefine\.(\w+)(?:\.copyWith\s*\(\s*(?:name\s*=\s*)?"([^"]+)")?/g)) {
       const definition = common.get(ref[1]);
       if (definition) attrs.set(ref[2] ?? definition.name, { ...definition, name: ref[2] ?? definition.name });
     }
-    for (const definition of declarations(inherited).values()) attrs.set(definition.name, definition);
+    for (const definition of declarations(inherited, common).values()) attrs.set(definition.name, definition);
   }
   const add = (definitions, prefix = '') => {
     for (const definition of definitions) {
@@ -78,7 +59,7 @@ for (const cls of classes) {
       'BOX_SHADOW_N',
       'BACKGROUND_BLEND_MODE_N',
     ].map((key) => common.get(key));
-    const gradient = [...declarations(read('widget/GradientParser.kt')).values()];
+    const gradient = [...declarations(read('widget/GradientParser.kt'), common).values()];
     add([...border, ...gradient]);
     if (name === 'Container') add([...border, ...gradient], 'foreground');
   }
@@ -89,12 +70,11 @@ for (const cls of classes) {
         const d = common.get(ref[1]);
         if (d) attrs.set(d.name, d);
       }
-      for (const key of ['imageAlignment', 'colorBlendMode'])
-        attrs.set(key, { name: key, kind: 'string', required: false });
+      attrs.set('imageAlignment', { ...common.get('ALIGNMENT'), name: 'imageAlignment' });
     }
     attrs.set('url', common.get('URL'));
     attrs.set('dataUri', { name: 'dataUri', kind: 'string', required: false });
-    if (name === 'Image') attrs.set('colorBlendMode', { name: 'colorBlendMode', kind: 'string', required: false });
+    attrs.set('colorBlendMode', { ...common.get('BLEND_MODE_N'), name: 'colorBlendMode' });
     attrs.set('url', { ...attrs.get('url'), required: false }); // url 或 dataUri 二选一
   }
   if (['Text', 'Raw', 'WidgetSpan'].includes(name)) {
@@ -103,7 +83,7 @@ for (const cls of classes) {
       if (d) attrs.set(d.name, d);
     }
     add(
-      [...declarations(read('widget/TextParser.kt')).values()].filter(
+      [...declarations(read('widget/TextParser.kt'), common).values()].filter(
         (d) =>
           !d.name.startsWith('strut') &&
           ![
@@ -131,16 +111,16 @@ for (const cls of classes) {
       ])
         attrs.set(
           key,
-          declarations(read('widget/TextParser.kt')).get(
+          declarations(read('widget/TextParser.kt'), common).get(
             'ATTR_' + key.replace(/[A-Z]/g, (c) => '_' + c).toUpperCase(),
           ) ?? { name: key, kind: 'string', required: false },
         );
-      for (const d of declarations(read('widget/TextParser.kt')).values())
+      for (const d of declarations(read('widget/TextParser.kt'), common).values())
         if (d.name.startsWith('strut')) attrs.set(d.name, d);
     }
   }
   if (name === 'Snapshot') {
-    for (const d of declarations(read('SnapshotElement.kt')).values()) attrs.set(d.name, d);
+    for (const d of declarations(read('SnapshotElement.kt'), common).values()) attrs.set(d.name, d);
   }
   if (name === 'ClipRRect') {
     for (const key of [
@@ -170,13 +150,9 @@ for (const cls of classes) {
   if (['Emoji', 'WidgetSpan'].includes(name)) attrs.delete('text');
   if (name === 'ColoredBox' || name === 'ColorFiltered') attrs.set('color', { ...attrs.get('color'), required: true });
   if (name === 'ColorFiltered') attrs.set('blendMode', { ...attrs.get('blendMode'), required: true });
-  if (name === 'WidgetSpan') {
-    attrs.set('alignment', { name: 'alignment', kind: 'string', required: false });
-    attrs.set('baseline', { name: 'baseline', kind: 'string', required: false });
-  }
-  if (name === 'Emoji') {
-    attrs.set('alignment', { name: 'alignment', kind: 'string', required: false });
-    attrs.set('baseline', { name: 'baseline', kind: 'string', required: false });
+  if (['WidgetSpan', 'Emoji'].includes(name)) {
+    attrs.set('alignment', { ...common.get('PLACEHOLDER_ALIGNMENT') });
+    attrs.set('baseline', { ...common.get('BASELINE_N') });
   }
   tags[name] = {
     mode,
@@ -184,7 +160,14 @@ for (const cls of classes) {
     attributes: Object.fromEntries(
       [...attrs]
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([key, d]) => [key, { kind: d.kind, ...(d.required ? { required: true } : {}) }]),
+        .map(([key, d]) => [
+          key,
+          {
+            kind: d.kind,
+            ...(d.required ? { required: true } : {}),
+            ...(d.valueType ? { valueType: d.valueType } : {}),
+          },
+        ]),
     ),
   };
 }
