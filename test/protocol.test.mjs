@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import packageJson from '../package.json' with { type: 'json' };
 
-test('Node stdio LSP 握手、诊断和补全', async (t) => {
+function startServer(t) {
   const server = spawn(process.execPath, [fileURLToPath(new URL('../dist/node.js', import.meta.url)), '--stdio'], {
     stdio: ['pipe', 'pipe', 'pipe'],
   });
@@ -53,6 +54,11 @@ test('Node stdio LSP 握手、诊断和补全', async (t) => {
     send({ jsonrpc: '2.0', id, method, params });
     return waitFor((message) => message.id === id);
   };
+  return { request, send, waitFor };
+}
+
+test('Node stdio LSP 握手、诊断和补全', async (t) => {
+  const { request, send, waitFor } = startServer(t);
   const initialize = await request('initialize', { processId: process.pid, rootUri: null, capabilities: {} });
   assert.equal(initialize.result.serverInfo.name, 'snapshot-lsp');
   assert.equal(initialize.result.serverInfo.version, packageJson.version);
@@ -97,3 +103,39 @@ test('Node stdio LSP 握手、诊断和补全', async (t) => {
   await request('shutdown', null);
   send({ jsonrpc: '2.0', method: 'exit' });
 });
+
+for (const snippetSupport of [true, false, undefined]) {
+  test(`Node stdio 按客户端 snippet 能力返回补全：${snippetSupport ?? '缺省'}`, async (t) => {
+    const { request, send } = startServer(t);
+    const capabilities =
+      snippetSupport === undefined
+        ? {}
+        : {
+            textDocument: { completion: { completionItem: { snippetSupport } } },
+          };
+    await request('initialize', { processId: process.pid, rootUri: null, capabilities });
+    send({ jsonrpc: '2.0', method: 'initialized', params: {} });
+    const uri = 'file:///capabilities.snapshot';
+    const text = '<Snapshot><Container wi';
+    send({
+      jsonrpc: '2.0',
+      method: 'textDocument/didOpen',
+      params: {
+        textDocument: { uri, languageId: 'snapshot', version: 1, text },
+      },
+    });
+    const completion = await request('textDocument/completion', {
+      textDocument: { uri },
+      position: { line: 0, character: text.length },
+    });
+    const width = completion.result.find((item) => item.label === 'width');
+    assert.equal(width.insertTextFormat, snippetSupport ? 2 : 1);
+    assert.equal(width.textEdit.newText, snippetSupport ? 'width="${1}"' : 'width=""');
+    const edit = { ...width.textEdit };
+    if (snippetSupport) edit.newText = edit.newText.replace('${1}', '');
+    const document = TextDocument.create(uri, 'snapshot', 1, text);
+    assert.equal(TextDocument.applyEdits(document, [edit]), '<Snapshot><Container width=""');
+    await request('shutdown', null);
+    send({ jsonrpc: '2.0', method: 'exit' });
+  });
+}

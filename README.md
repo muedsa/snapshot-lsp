@@ -10,6 +10,10 @@ Snapshot 类 DOM DSL 的通用 TypeScript 语言服务。核心不依赖编辑�
 - 颜色属性支持 Snapshot parser 的 CSS 颜色语法：`#RGB`、`#RGBA`、`#RRGGBB`、`#RRGGBBAA`、命名颜色、`transparent` 及 `rgb()`/`rgba()`/`hsl()`/`hsla()`。
 - 编辑中的不完整标签可继续补全；可通过 `SnapshotLanguageService` 扩展标签目录。
 
+补全支持在名称中间替换标签和属性名，修改已有属性名时保留原赋值；闭合标签候选取当前位置仍打开的父节点，并补齐缺少的 `>`。空标签名和紧邻后续标签的不完整标签也可继续补全，注释、CDATA 和属性值内不会误插入标签或属性名。
+
+枚举补全包含 `textDirection`、Emoji/WidgetSpan 的占位符 `alignment`、平铺模式和混合模式，以及 `gradientTileMode`、`foregroundGradientTileMode`、`backgroundBlendMode`、`foregroundBackgroundBlendMode`、`colorBlendMode` 等同类型属性。
+
 目录和 CSS 命名颜色分别固化于 `src/catalog.generated.json`、`src/css-color-names.generated.json`，运行时无需 Java/Kotlin 或 Snapshot 仓库。语言服务只做静态检查；图片解码、布局渲染以及复杂属性间约束仍由 Snapshot 解析器负责。
 
 `<ClipPath>` 提供 `path` 必填提示、`viewBox` 格式检查和 `fit`、`fillRule`、`clipBehavior` 枚举补全。SVG 路径命令的完整语法与坐标有效性由 Snapshot parser 在解析时检查。
@@ -34,6 +38,8 @@ node dist/node.js --stdio
 
 服务端命令为 `snapshot-lsp --stdio`，或者运行包内 `dist/node.js --stdio`。客户端将 `.snapshot` 文件关联到语言 ID `snapshot`，以标准 LSP 的 stdio 传输启动服务即可。已实现 `textDocumentSync`、`completion`、`hover` 和 `publishDiagnostics`。
 
+服务端根据初始化参数中的 `textDocument.completion.completionItem.snippetSupport` 决定属性模板格式：仅显式声明 `true` 时返回 snippet；未声明或为 `false` 时返回普通文本，例如 `width=""`。浏览器 Worker 使用相同的能力协商。
+
 ### Monaco / 浏览器 Worker
 
 用打包器构建 Worker 入口：
@@ -54,7 +60,14 @@ import { SnapshotLanguageService } from '@muedsa/snapshot-lsp';
 const service = new SnapshotLanguageService();
 const diagnostics = service.diagnostics('<Snapshot><Text>Hello</Text></Snapshot>');
 const completions = service.completions('<Snapshot><Co', { line: 0, character: 13 });
+
+// 不解析 snippet 的宿主可显式选择普通文本。
+const attributes = service.completions('<Snapshot><Container wi', { line: 0, character: 23 }, undefined, {
+  snippetSupport: false,
+});
 ```
+
+`completions(text, position, uri?, options?)` 的 `options` 类型为导出的 `CompletionOptions`。直接调用核心时，`snippetSupport` 默认 `true`，保持已有集成的行为；通过 LSP 连接时由服务端按客户端能力设置。
 
 扩展标签时向构造函数传入 `{ Custom: { mode: 'none', description: '...', attributes: { title: { kind: 'string' } } } }`。目录只描述静态语法，宿主仍需在 Snapshot 的 `WidgetParserManager` 中注册对应解析器。
 

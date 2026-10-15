@@ -7,6 +7,8 @@ export interface AttributeNode {
   name: string;
   start: number;
   end: number;
+  /** 整个属性的结束偏移，包含赋值和闭合引号，不包含尾随空白。end 仍为名称结束偏移。 */
+  syntaxEnd?: number;
   value?: string;
   valueStart?: number;
   valueEnd?: number;
@@ -32,6 +34,8 @@ export interface TagToken {
   name: string;
   closing: boolean;
   incomplete: boolean;
+  /** 扫描到标签起始位置时仍打开的父节点，包含空名称标签的上下文。 */
+  parent?: ElementNode;
   element?: ElementNode;
 }
 export interface IgnoredRange {
@@ -77,7 +81,7 @@ function parseAttributes(source: string, from: number, to: number): AttributeNod
     const end = i;
     while (i < to && /\s/.test(source[i])) i++;
     if (source[i] !== '=') {
-      attrs.push({ name, start, end });
+      attrs.push({ name, start, end, syntaxEnd: end });
       continue;
     }
     i++;
@@ -90,8 +94,8 @@ function parseAttributes(source: string, from: number, to: number): AttributeNod
       while (i < to && !/[\s/>]/.test(source[i])) i++;
     }
     const valueEnd = i;
-    attrs.push({ name, start, end, value: source.slice(valueStart, valueEnd), valueStart, valueEnd });
     if (quote && source[i] === quote) i++;
+    attrs.push({ name, start, end, syntaxEnd: i, value: source.slice(valueStart, valueEnd), valueStart, valueEnd });
   }
   return attrs;
 }
@@ -144,21 +148,11 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
     if (closing) cursor++;
     namePattern.lastIndex = cursor;
     const match = namePattern.exec(source);
-    if (!match) {
-      if (cursor === source.length)
-        tags.push({
-          start: lt,
-          nameStart: cursor,
-          nameEnd: cursor,
-          end: cursor,
-          name: '',
-          closing,
-          incomplete: true,
-        });
+    if (!match && cursor < source.length && !/[\s<>/]/.test(source[cursor])) {
       i = lt + 1;
       continue;
     }
-    const name = match[0],
+    const name = match?.[0] ?? '',
       nameStart = cursor;
     cursor += name.length;
     let end = cursor,
@@ -168,11 +162,11 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
       if (quote) {
         if (ch === quote) quote = undefined;
       } else if (ch === '"' || ch === "'") quote = ch;
-      else if (ch === '>') break;
+      else if (ch === '>' || ch === '<') break;
       end++;
     }
-    const incomplete = end >= source.length;
-    const tagEnd = incomplete ? source.length : end + 1;
+    const incomplete = source[end] !== '>';
+    const tagEnd = incomplete ? end : end + 1;
     const token: TagToken = {
       start: lt,
       nameStart,
@@ -181,8 +175,14 @@ export function parseDocument(document: TextDocument, catalog: Record<string, Ta
       name,
       closing,
       incomplete,
+      parent: stack.at(-1),
     };
     tags.push(token);
+    // 空名称只保留补全 token，不参与 AST、父子关系和诊断。
+    if (!name) {
+      i = tagEnd;
+      continue;
+    }
     if (closing) {
       const found = stack.findLastIndex((node) => node.name === name);
       if (found >= 0) {

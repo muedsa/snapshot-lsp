@@ -29,9 +29,43 @@ const values: Record<string, readonly string[]> = {
   crossAxisAlignment: ['START', 'END', 'CENTER', 'STRETCH', 'BASELINE'],
   verticalDirection: ['UP', 'DOWN'],
   textAlign: ['LEFT', 'RIGHT', 'CENTER', 'JUSTIFY', 'START', 'END'],
+  textDirection: ['LTR', 'RTL'],
   overflow: ['CLIP', 'FADE', 'ELLIPSIS', 'VISIBLE'],
   clipBehavior: ['NONE', 'HARD_EDGE', 'ANTI_ALIAS', 'ANTI_ALIAS_WITH_SAVE_LAYER'],
+  tileMode: ['CLAMP', 'REPEAT', 'MIRROR', 'DECAL'],
+  blendMode: [
+    'CLEAR',
+    'SRC',
+    'DST',
+    'SRC_OVER',
+    'DST_OVER',
+    'SRC_IN',
+    'DST_IN',
+    'SRC_OUT',
+    'DST_OUT',
+    'SRC_ATOP',
+    'DST_ATOP',
+    'XOR',
+    'PLUS',
+    'MODULATE',
+    'SCREEN',
+    'OVERLAY',
+    'DARKEN',
+    'LIGHTEN',
+    'COLOR_DODGE',
+    'COLOR_BURN',
+    'HARD_LIGHT',
+    'SOFT_LIGHT',
+    'DIFFERENCE',
+    'EXCLUSION',
+    'MULTIPLY',
+    'HUE',
+    'SATURATION',
+    'COLOR',
+    'LUMINOSITY',
+  ],
 };
+const placeholderAlignment = ['BASELINE', 'ABOVE_BASELINE', 'BELOW_BASELINE', 'TOP', 'BOTTOM', 'MIDDLE'];
 const alignment = [
   'TOP_LEFT',
   'TOP_CENTER',
@@ -46,10 +80,13 @@ const alignment = [
 for (const [tagName, spec] of Object.entries(tags)) {
   for (const [attrName, attr] of Object.entries(spec.attributes)) {
     if (attr.kind === 'boolean') attr.values = ['true', 'false'];
-    else if (attrName === 'alignment' && tagName !== 'Emoji' && tagName !== 'WidgetSpan') attr.values = alignment;
+    else if (attrName === 'alignment')
+      attr.values = ['Emoji', 'WidgetSpan'].includes(tagName) ? placeholderAlignment : alignment;
     else if (attrName.endsWith('Alignment') && attrName !== 'mainAxisAlignment' && attrName !== 'crossAxisAlignment')
       attr.values = alignment;
     else if (attrName.endsWith('GradientType')) attr.values = values.gradientType;
+    else if (attrName.endsWith('TileMode')) attr.values = values.tileMode;
+    else if (attrName.endsWith('BlendMode')) attr.values = values.blendMode;
     else if (values[attrName]) attr.values = values[attrName];
   }
 }

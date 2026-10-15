@@ -9,6 +9,11 @@ interface Analysis {
   parsed: ParseResult;
 }
 
+export interface CompletionOptions {
+  /** 直接调用核心时默认启用以兼容旧 API；LSP 服务按客户端声明显式传入。 */
+  snippetSupport?: boolean;
+}
+
 export class SnapshotLanguageService {
   readonly catalog: Record<string, TagSpec>;
   private readonly analyses = new Map<string, Analysis>();
@@ -35,7 +40,12 @@ export class SnapshotLanguageService {
     return this.analyze(text, uri).parsed.diagnostics;
   }
 
-  completions(text: string, position: Position, uri = 'file:///document.snapshot'): CompletionItem[] {
+  completions(
+    text: string,
+    position: Position,
+    uri = 'file:///document.snapshot',
+    options: CompletionOptions = {},
+  ): CompletionItem[] {
     const { document, parsed } = this.analyze(text, uri);
     const offset = document.offsetAt(position);
     if (
@@ -50,9 +60,7 @@ export class SnapshotLanguageService {
     if (!token) return [];
     if (token.closing) {
       if (offset > token.nameEnd) return [];
-      const open = parsed.elements
-        .filter((n) => n.start < token.start && n.openEnd <= token.start && n.end >= token.start && !n.selfClosing)
-        .at(-1);
+      const open = token.parent;
       return open
         ? [
             {
@@ -60,18 +68,14 @@ export class SnapshotLanguageService {
               kind: 10,
               textEdit: {
                 range: replaceRange(document, token.nameStart, token.nameEnd),
-                newText: open.name + (token.incomplete && token.nameEnd === token.end ? '>' : ''),
+                newText: open.name + (token.incomplete ? '>' : ''),
               },
             },
           ]
         : [];
     }
     if (offset <= token.nameEnd) {
-      const parent =
-        token.element?.parent ??
-        parsed.elements
-          .filter((n) => n.start < token.start && n.openEnd <= token.start && n.end >= token.start && !n.selfClosing)
-          .at(-1);
+      const parent = token.parent;
       if (
         parent &&
         (this.catalog[parent.name]?.mode === 'none' ||
@@ -109,9 +113,17 @@ export class SnapshotLanguageService {
         }));
     }
     const editingName = tag.attributes.find((attr) => attr.start <= offset && offset <= attr.end);
-    const prefix = editingName
-      ? text.slice(editingName.start, offset)
-      : (/[A-Za-z0-9:_-]*$/.exec(text.slice(tag.nameEnd, offset))?.[0] ?? '');
+    if (!editingName) {
+      const previousEnd = tag.attributes.reduce((end, attr) => {
+        const syntaxEnd = attr.syntaxEnd ?? attr.end;
+        return syntaxEnd <= offset ? Math.max(end, syntaxEnd) : end;
+      }, tag.nameEnd);
+      // 新属性只能插入名称/完整属性之后的空白，不能位于赋值过程或 / 之后。
+      if (!/^\s+$/.test(text.slice(previousEnd, offset))) return [];
+    }
+    const prefix = editingName ? text.slice(editingName.start, offset) : '';
+    const hasAssignment = editingName?.valueStart !== undefined;
+    const useSnippet = !hasAssignment && (options.snippetSupport ?? true);
     const existing = new Set(tag.attributes.filter((attr) => attr !== editingName).map((attr) => attr.name));
     return Object.entries(spec.attributes)
       .filter(([name]) => name.startsWith(prefix) && !existing.has(name))
@@ -119,10 +131,10 @@ export class SnapshotLanguageService {
         label: name,
         kind: 10,
         detail: attr.required ? '必填属性' : attr.kind,
-        insertTextFormat: 2,
+        insertTextFormat: useSnippet ? 2 : 1,
         textEdit: {
-          range: replaceRange(document, editingName?.start ?? offset - prefix.length, editingName?.end ?? offset),
-          newText: `${name}="\${1}"`,
+          range: replaceRange(document, editingName?.start ?? offset, editingName?.end ?? offset),
+          newText: hasAssignment ? name : useSnippet ? `${name}="\${1}"` : `${name}=""`,
         },
       }));
   }

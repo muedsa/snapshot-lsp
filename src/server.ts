@@ -5,20 +5,24 @@ import { SnapshotLanguageService } from './service.js';
 /** 给 Node stdio、Web Worker 等传输复用的协议处理器。 */
 export function registerSnapshotServer(connection: Connection, service = new SnapshotLanguageService()): void {
   const documents = new Map<string, TextDocument>();
+  let snippetSupport = false;
   const publish = (document: TextDocument) =>
     connection.sendDiagnostics({
       uri: document.uri,
       version: document.version,
       diagnostics: service.diagnostics(document.getText(), document.uri),
     });
-  connection.onInitialize(() => ({
-    capabilities: {
-      textDocumentSync: 2,
-      completionProvider: { triggerCharacters: ['<', '/', ' ', '=', '"', "'"] },
-      hoverProvider: true,
-    },
-    serverInfo: { name: 'snapshot-lsp', version: '0.2.0' },
-  }));
+  connection.onInitialize(({ capabilities }) => {
+    snippetSupport = capabilities.textDocument?.completion?.completionItem?.snippetSupport === true;
+    return {
+      capabilities: {
+        textDocumentSync: 2,
+        completionProvider: { triggerCharacters: ['<', '/', ' ', '=', '"', "'"] },
+        hoverProvider: true,
+      },
+      serverInfo: { name: 'snapshot-lsp', version: '0.2.0' },
+    };
+  });
   connection.onDidOpenTextDocument(({ textDocument }) => {
     const document = TextDocument.create(
       textDocument.uri,
@@ -43,7 +47,7 @@ export function registerSnapshotServer(connection: Connection, service = new Sna
   });
   connection.onCompletion(({ textDocument, position }) => {
     const document = documents.get(textDocument.uri);
-    return document ? service.completions(document.getText(), position, document.uri) : [];
+    return document ? service.completions(document.getText(), position, document.uri, { snippetSupport }) : [];
   });
   connection.onHover(({ textDocument, position }) => {
     const document = documents.get(textDocument.uri);
