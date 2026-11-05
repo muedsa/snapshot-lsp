@@ -10,7 +10,13 @@
         "kind": "boolean"
       },
       "type": {
-        "kind": "string"
+        "kind": "string",
+        "enumAliases": true,
+        "values": [
+          "png",
+          "jpg",
+          "webp"
+        ]
       }
     }
   },
@@ -20,113 +26,149 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "backgroundBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "border": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderBottom": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderRadius": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderTop": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "boxShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BoxShadow"
       },
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "foregroundBackgroundBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "foregroundBorder": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "foregroundBorderBottom": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "foregroundBorderLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "foregroundBorderRadius": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "foregroundBorderRadiusBottomLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "foregroundBorderRadiusBottomRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "foregroundBorderRadiusTopLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "foregroundBorderRadiusTopRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "foregroundBorderRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "foregroundBorderTop": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "foregroundBoxShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BoxShadow"
       },
       "foregroundColor": {
         "kind": "color"
       },
       "foregroundGradientBegin": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "foregroundGradientCenter": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "foregroundGradientColors": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "ColorList"
       },
       "foregroundGradientEnd": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "foregroundGradientEndAngle": {
         "kind": "number"
       },
       "foregroundGradientFocal": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "foregroundGradientFocalRadius": {
         "kind": "number"
@@ -141,41 +183,54 @@
         "kind": "number"
       },
       "foregroundGradientStops": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FloatList"
       },
       "foregroundGradientTileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       },
       "foregroundGradientType": {
         "kind": "string",
-        "valueType": "GradientType"
+        "valueType": "GradientType",
+        "enumAliases": true
       },
       "foregroundShape": {
         "kind": "string",
-        "valueType": "BoxShape"
+        "valueType": "BoxShape",
+        "enumAliases": true
       },
       "gradientBegin": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientCenter": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientColors": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "ColorList"
       },
       "gradientEnd": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -190,21 +245,25 @@
         "kind": "number"
       },
       "gradientStops": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FloatList"
       },
       "gradientTileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       },
       "gradientType": {
         "kind": "string",
-        "valueType": "GradientType"
+        "valueType": "GradientType",
+        "enumAliases": true
       },
       "height": {
         "kind": "number"
       },
       "margin": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "EdgeInsets"
       },
       "maxHeight": {
         "kind": "number"
@@ -219,18 +278,23 @@
         "kind": "number"
       },
       "padding": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "EdgeInsets"
       },
       "shape": {
         "kind": "string",
-        "valueType": "BoxShape"
+        "valueType": "BoxShape",
+        "enumAliases": true
       },
       "transform": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Matrix44CMO"
       },
       "transformAlignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "width": {
         "kind": "number"
@@ -243,65 +307,86 @@
     "attributes": {
       "backgroundBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "border": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderBottom": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderRadius": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderTop": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "boxShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BoxShadow"
       },
       "color": {
         "kind": "color"
       },
       "gradientBegin": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientCenter": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientColors": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "ColorList"
       },
       "gradientEnd": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -316,19 +401,23 @@
         "kind": "number"
       },
       "gradientStops": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FloatList"
       },
       "gradientTileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       },
       "gradientType": {
         "kind": "string",
-        "valueType": "GradientType"
+        "valueType": "GradientType",
+        "enumAliases": true
       },
       "shape": {
         "kind": "string",
-        "valueType": "BoxShape"
+        "valueType": "BoxShape",
+        "enumAliases": true
       }
     }
   },
@@ -348,65 +437,86 @@
     "attributes": {
       "backgroundBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "border": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderBottom": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderRadius": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "borderTop": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BorderSide"
       },
       "boxShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "BoxShadow"
       },
       "color": {
         "kind": "color"
       },
       "gradientBegin": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientCenter": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientColors": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "ColorList"
       },
       "gradientEnd": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientEndAngle": {
         "kind": "number"
       },
       "gradientFocal": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "gradientFocalRadius": {
         "kind": "number"
@@ -421,23 +531,28 @@
         "kind": "number"
       },
       "gradientStops": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FloatList"
       },
       "gradientTileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       },
       "gradientType": {
         "kind": "string",
-        "valueType": "GradientType"
+        "valueType": "GradientType",
+        "enumAliases": true
       },
       "position": {
         "kind": "string",
-        "valueType": "DecorationPosition"
+        "valueType": "DecorationPosition",
+        "enumAliases": true
       },
       "shape": {
         "kind": "string",
-        "valueType": "BoxShape"
+        "valueType": "BoxShape",
+        "enumAliases": true
       }
     }
   },
@@ -447,36 +562,44 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "crossAxisAlignment": {
         "kind": "string",
-        "valueType": "CrossAxisAlignment"
+        "valueType": "CrossAxisAlignment",
+        "enumAliases": true
       },
       "direction": {
         "kind": "string",
         "required": true,
-        "valueType": "Axis"
+        "valueType": "Axis",
+        "enumAliases": true
       },
       "mainAxisAlignment": {
         "kind": "string",
-        "valueType": "MainAxisAlignment"
+        "valueType": "MainAxisAlignment",
+        "enumAliases": true
       },
       "mainAxisSize": {
         "kind": "string",
-        "valueType": "MainAxisSize"
+        "valueType": "MainAxisSize",
+        "enumAliases": true
       },
       "textBaseline": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       },
       "verticalDirection": {
         "kind": "string",
-        "valueType": "VerticalDirection"
+        "valueType": "VerticalDirection",
+        "enumAliases": true
       }
     }
   },
@@ -486,31 +609,38 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "crossAxisAlignment": {
         "kind": "string",
-        "valueType": "CrossAxisAlignment"
+        "valueType": "CrossAxisAlignment",
+        "enumAliases": true
       },
       "mainAxisAlignment": {
         "kind": "string",
-        "valueType": "MainAxisAlignment"
+        "valueType": "MainAxisAlignment",
+        "enumAliases": true
       },
       "mainAxisSize": {
         "kind": "string",
-        "valueType": "MainAxisSize"
+        "valueType": "MainAxisSize",
+        "enumAliases": true
       },
       "textBaseline": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       },
       "verticalDirection": {
         "kind": "string",
-        "valueType": "VerticalDirection"
+        "valueType": "VerticalDirection",
+        "enumAliases": true
       }
     }
   },
@@ -520,31 +650,38 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "crossAxisAlignment": {
         "kind": "string",
-        "valueType": "CrossAxisAlignment"
+        "valueType": "CrossAxisAlignment",
+        "enumAliases": true
       },
       "mainAxisAlignment": {
         "kind": "string",
-        "valueType": "MainAxisAlignment"
+        "valueType": "MainAxisAlignment",
+        "enumAliases": true
       },
       "mainAxisSize": {
         "kind": "string",
-        "valueType": "MainAxisSize"
+        "valueType": "MainAxisSize",
+        "enumAliases": true
       },
       "textBaseline": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       },
       "verticalDirection": {
         "kind": "string",
-        "valueType": "VerticalDirection"
+        "valueType": "VerticalDirection",
+        "enumAliases": true
       }
     }
   },
@@ -563,7 +700,8 @@
     "attributes": {
       "fit": {
         "kind": "string",
-        "valueType": "FlexFit"
+        "valueType": "FlexFit",
+        "enumAliases": true
       },
       "flex": {
         "kind": "integer"
@@ -585,19 +723,24 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "fit": {
         "kind": "string",
-        "valueType": "StackFit"
+        "valueType": "StackFit",
+        "enumAliases": true
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       }
     }
   },
@@ -607,22 +750,27 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "fit": {
         "kind": "string",
-        "valueType": "StackFit"
+        "valueType": "StackFit",
+        "enumAliases": true
       },
       "index": {
         "kind": "integer"
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       }
     }
   },
@@ -678,7 +826,9 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "heightFactor": {
         "kind": "number"
@@ -694,11 +844,14 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "constrainedAxis": {
         "kind": "string",
-        "valueType": "Axis"
+        "valueType": "Axis",
+        "enumAliases": true
       }
     }
   },
@@ -738,7 +891,9 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "maxHeight": {
         "kind": "number"
@@ -760,7 +915,9 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "height": {
         "kind": "number",
@@ -777,7 +934,8 @@
     "description": "内边距",
     "attributes": {
       "padding": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "EdgeInsets"
       }
     }
   },
@@ -787,7 +945,9 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "heightFactor": {
         "kind": "number"
@@ -824,14 +984,18 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "matrix": {
         "kind": "string",
-        "required": true
+        "required": true,
+        "syntax": "Matrix44CMO"
       },
       "origin": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Offset"
       }
     }
   },
@@ -841,7 +1005,8 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       }
     }
   },
@@ -851,7 +1016,8 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       }
     }
   },
@@ -860,23 +1026,29 @@
     "description": "按圆角矩形裁剪子节点",
     "attributes": {
       "borderRadius": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusBottomRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopLeft": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "borderRadiusTopRight": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "Radius"
       },
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       }
     }
   },
@@ -886,13 +1058,24 @@
     "attributes": {
       "clipBehavior": {
         "kind": "string",
-        "valueType": "ClipBehavior"
+        "valueType": "ClipBehavior",
+        "enumAliases": true
       },
       "fillRule": {
-        "kind": "string"
+        "kind": "string",
+        "enumAliases": true,
+        "values": [
+          "NON_ZERO",
+          "EVEN_ODD"
+        ]
       },
       "fit": {
-        "kind": "string"
+        "kind": "string",
+        "enumAliases": true,
+        "values": [
+          "FILL",
+          "CONTAIN"
+        ]
       },
       "path": {
         "kind": "string",
@@ -910,7 +1093,8 @@
       "blendMode": {
         "kind": "string",
         "required": true,
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "color": {
         "kind": "color",
@@ -932,7 +1116,8 @@
       },
       "tileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       }
     }
   },
@@ -942,7 +1127,8 @@
     "attributes": {
       "blendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "sigmaX": {
         "kind": "number",
@@ -954,7 +1140,8 @@
       },
       "tileMode": {
         "kind": "string",
-        "valueType": "FilterTileMode"
+        "valueType": "FilterTileMode",
+        "enumAliases": true
       }
     }
   },
@@ -964,21 +1151,25 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "colorBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "dataUri": {
         "kind": "string"
       },
       "fit": {
         "kind": "string",
-        "valueType": "BoxFit"
+        "valueType": "BoxFit",
+        "enumAliases": true
       },
       "height": {
         "kind": "number"
@@ -991,7 +1182,8 @@
       },
       "repeat": {
         "kind": "string",
-        "valueType": "ImageRepeat"
+        "valueType": "ImageRepeat",
+        "enumAliases": true
       },
       "scale": {
         "kind": "number"
@@ -1013,13 +1205,17 @@
       },
       "baselineMode": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "decoration": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "TextDecoration",
+        "syntax": "TextDecoration",
+        "enumAliases": true
       },
       "decorationColor": {
         "kind": "color"
@@ -1029,31 +1225,37 @@
       },
       "decorationLineStyle": {
         "kind": "string",
-        "valueType": "DecorationLineStyle"
+        "valueType": "DecorationLineStyle",
+        "enumAliases": true
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
         "kind": "string",
-        "valueType": "FontEdging"
+        "valueType": "FontEdging",
+        "enumAliases": true
       },
       "fontFamily": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFamily"
       },
       "fontFeatures": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFeatureList"
       },
       "fontHinting": {
         "kind": "string",
-        "valueType": "FontHinting"
+        "valueType": "FontHinting",
+        "enumAliases": true
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
         "kind": "string",
-        "valueType": "FontStyle"
+        "valueType": "FontStyle",
+        "enumAliases": true
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
@@ -1063,15 +1265,18 @@
       },
       "foregroundMode": {
         "kind": "string",
-        "valueType": "PaintMode"
+        "valueType": "PaintMode",
+        "enumAliases": true
       },
       "foregroundStrokeCap": {
         "kind": "string",
-        "valueType": "PaintStrokeCap"
+        "valueType": "PaintStrokeCap",
+        "enumAliases": true
       },
       "foregroundStrokeJoin": {
         "kind": "string",
-        "valueType": "PaintStrokeJoin"
+        "valueType": "PaintStrokeJoin",
+        "enumAliases": true
       },
       "foregroundStrokeMiter": {
         "kind": "number"
@@ -1093,7 +1298,8 @@
       },
       "overflow": {
         "kind": "string",
-        "valueType": "TextOverflow"
+        "valueType": "TextOverflow",
+        "enumAliases": true
       },
       "softWrap": {
         "kind": "boolean"
@@ -1102,14 +1308,16 @@
         "kind": "boolean"
       },
       "strutFontFamily": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFamily"
       },
       "strutFontSize": {
         "kind": "number"
       },
       "strutFontStyle": {
         "kind": "string",
-        "valueType": "FontStyle"
+        "valueType": "FontStyle",
+        "enumAliases": true
       },
       "strutHeight": {
         "kind": "number"
@@ -1131,22 +1339,27 @@
       },
       "textAlign": {
         "kind": "string",
-        "valueType": "ParagraphAlignment"
+        "valueType": "ParagraphAlignment",
+        "enumAliases": true
       },
       "textDirection": {
         "kind": "string",
-        "valueType": "Direction"
+        "valueType": "Direction",
+        "enumAliases": true
       },
       "textHeightMode": {
         "kind": "string",
-        "valueType": "HeightMode"
+        "valueType": "HeightMode",
+        "enumAliases": true
       },
       "textShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "TextShadow"
       },
       "textWidthBasis": {
         "kind": "string",
-        "valueType": "TextWidthBasis"
+        "valueType": "TextWidthBasis",
+        "enumAliases": true
       },
       "topRatio": {
         "kind": "number"
@@ -1165,13 +1378,17 @@
       },
       "baselineMode": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "decoration": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "TextDecoration",
+        "syntax": "TextDecoration",
+        "enumAliases": true
       },
       "decorationColor": {
         "kind": "color"
@@ -1181,31 +1398,37 @@
       },
       "decorationLineStyle": {
         "kind": "string",
-        "valueType": "DecorationLineStyle"
+        "valueType": "DecorationLineStyle",
+        "enumAliases": true
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
         "kind": "string",
-        "valueType": "FontEdging"
+        "valueType": "FontEdging",
+        "enumAliases": true
       },
       "fontFamily": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFamily"
       },
       "fontFeatures": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFeatureList"
       },
       "fontHinting": {
         "kind": "string",
-        "valueType": "FontHinting"
+        "valueType": "FontHinting",
+        "enumAliases": true
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
         "kind": "string",
-        "valueType": "FontStyle"
+        "valueType": "FontStyle",
+        "enumAliases": true
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
@@ -1215,15 +1438,18 @@
       },
       "foregroundMode": {
         "kind": "string",
-        "valueType": "PaintMode"
+        "valueType": "PaintMode",
+        "enumAliases": true
       },
       "foregroundStrokeCap": {
         "kind": "string",
-        "valueType": "PaintStrokeCap"
+        "valueType": "PaintStrokeCap",
+        "enumAliases": true
       },
       "foregroundStrokeJoin": {
         "kind": "string",
-        "valueType": "PaintStrokeJoin"
+        "valueType": "PaintStrokeJoin",
+        "enumAliases": true
       },
       "foregroundStrokeMiter": {
         "kind": "number"
@@ -1247,7 +1473,8 @@
         "kind": "string"
       },
       "textShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "TextShadow"
       },
       "topRatio": {
         "kind": "number"
@@ -1263,39 +1490,46 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "PlaceholderAlignment"
+        "valueType": "PlaceholderAlignment",
+        "enumAliases": true
       },
       "baseline": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "colorBlendMode": {
         "kind": "string",
-        "valueType": "BlendMode"
+        "valueType": "BlendMode",
+        "enumAliases": true
       },
       "dataUri": {
         "kind": "string"
       },
       "fit": {
         "kind": "string",
-        "valueType": "BoxFit"
+        "valueType": "BoxFit",
+        "enumAliases": true
       },
       "height": {
         "kind": "number"
       },
       "imageAlignment": {
         "kind": "string",
-        "valueType": "BoxAlignment"
+        "valueType": "BoxAlignment",
+        "syntax": "BoxAlignment",
+        "enumAliases": true
       },
       "opacity": {
         "kind": "number"
       },
       "repeat": {
         "kind": "string",
-        "valueType": "ImageRepeat"
+        "valueType": "ImageRepeat",
+        "enumAliases": true
       },
       "scale": {
         "kind": "number"
@@ -1314,24 +1548,30 @@
     "attributes": {
       "alignment": {
         "kind": "string",
-        "valueType": "PlaceholderAlignment"
+        "valueType": "PlaceholderAlignment",
+        "enumAliases": true
       },
       "backgroundColor": {
         "kind": "color"
       },
       "baseline": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "baselineMode": {
         "kind": "string",
-        "valueType": "BaselineMode"
+        "valueType": "BaselineMode",
+        "enumAliases": true
       },
       "color": {
         "kind": "color"
       },
       "decoration": {
-        "kind": "string"
+        "kind": "string",
+        "valueType": "TextDecoration",
+        "syntax": "TextDecoration",
+        "enumAliases": true
       },
       "decorationColor": {
         "kind": "color"
@@ -1341,31 +1581,37 @@
       },
       "decorationLineStyle": {
         "kind": "string",
-        "valueType": "DecorationLineStyle"
+        "valueType": "DecorationLineStyle",
+        "enumAliases": true
       },
       "decorationThickness": {
         "kind": "number"
       },
       "fontEdging": {
         "kind": "string",
-        "valueType": "FontEdging"
+        "valueType": "FontEdging",
+        "enumAliases": true
       },
       "fontFamily": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFamily"
       },
       "fontFeatures": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "FontFeatureList"
       },
       "fontHinting": {
         "kind": "string",
-        "valueType": "FontHinting"
+        "valueType": "FontHinting",
+        "enumAliases": true
       },
       "fontSize": {
         "kind": "number"
       },
       "fontStyle": {
         "kind": "string",
-        "valueType": "FontStyle"
+        "valueType": "FontStyle",
+        "enumAliases": true
       },
       "foregroundAntiAlias": {
         "kind": "boolean"
@@ -1375,15 +1621,18 @@
       },
       "foregroundMode": {
         "kind": "string",
-        "valueType": "PaintMode"
+        "valueType": "PaintMode",
+        "enumAliases": true
       },
       "foregroundStrokeCap": {
         "kind": "string",
-        "valueType": "PaintStrokeCap"
+        "valueType": "PaintStrokeCap",
+        "enumAliases": true
       },
       "foregroundStrokeJoin": {
         "kind": "string",
-        "valueType": "PaintStrokeJoin"
+        "valueType": "PaintStrokeJoin",
+        "enumAliases": true
       },
       "foregroundStrokeMiter": {
         "kind": "number"
@@ -1404,7 +1653,8 @@
         "kind": "boolean"
       },
       "textShadow": {
-        "kind": "string"
+        "kind": "string",
+        "syntax": "TextShadow"
       },
       "topRatio": {
         "kind": "number"

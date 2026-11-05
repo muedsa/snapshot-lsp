@@ -20,7 +20,7 @@ export function registerSnapshotServer(connection: Connection, service = new Sna
         completionProvider: { triggerCharacters: ['<', '/', ' ', '=', '"', "'"] },
         hoverProvider: true,
       },
-      serverInfo: { name: 'snapshot-lsp', version: '0.2.1' },
+      serverInfo: { name: 'snapshot-lsp', version: '0.3.0' },
     };
   });
   connection.onDidOpenTextDocument(({ textDocument }) => {

@@ -1,0 +1,54 @@
+{
+  "EdgeInsets": {
+    "format": "空白分隔 1～4 个有限数，按 CSS 上、右、下、左展开；旧 (垂直,水平) / (左,上,右,下) 保留原顺序。旧 (1,2,3,4) 等价新 2 3 4 1，不能直接删除标点。支持科学计数法，不接受裸逗号列表或 px/%。",
+    "examples": ["8", "8 16", "1 2 3", "1 2 3 4", "(1,2,3,4)"]
+  },
+  "BoxAlignment": {
+    "format": "对齐关键字忽略首尾空白和大小写，连字符可替代下划线；或恰好两个有限坐标 x y / x,y / (x,y) / (x y)。支持科学计数法，坐标不限于 -1..1。",
+    "examples": ["-1 0", "(-1,0)"]
+  },
+  "Offset": {
+    "format": "恰好两个有限坐标 x y / x,y / (x,y) / (x y)，支持空白和科学计数法，不接受单位。",
+    "examples": ["4 -2", "(4,-2)"]
+  },
+  "Radius": {
+    "format": "圆半径，或 水平半径 / 垂直半径；旧 (水平半径,垂直半径) / (水平半径 垂直半径) 仍可用。数值须有限，支持科学计数法；不接受裸双值列表或 CSS 多角半径。",
+    "examples": ["12", "12 / 6", "(12,6)"]
+  },
+  "Matrix44CMO": {
+    "format": "16 个列优先有限数，空白或逗号分隔、可加外层括号；或 translate(x[,y]) rotate(角度deg/rad) scale(x[,y]) 函数序列，函数名忽略大小写。none 表示单位矩阵。按书写顺序右乘，作用到点时右侧变换先发生：translate(10,0) scale(2) 将 (1,0) 映射为 (12,0)，交换顺序得到 (22,0)。每步合成须有限。旋转必须带 deg/rad，不支持 px/%、未知或嵌套函数及矩阵混写。",
+    "examples": ["translate(12,8) rotate(30deg) scale(1.2)", "none", "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"]
+  },
+  "FontFamily": {
+    "format": "英文逗号分隔字体名，逐项去除首尾空白，保留名称内部空白、大小写和连字符；不允许空项。不进行 CSS 引号解码或转义。",
+    "examples": ["Arial, Noto Sans"]
+  },
+  "BorderSide": {
+    "format": "宽度 [样式] 颜色，省略样式时为 SOLID；none 表示无边框。宽度须有限，支持科学计数法；样式仅 NONE / SOLID，忽略大小写。颜色支持完整 CSS 颜色函数，不支持任意参数顺序或 px 单位。",
+    "examples": ["2 red", "none", "2 solid rgb(255 0 0 / 50%)"]
+  },
+  "FloatList": {
+    "format": "空白或逗号分隔的有限数列表，同一列表不混用分隔符，逗号前后可有空白；支持科学计数法。渐变色标须在 0..1 内、升序且数量与颜色一致。",
+    "examples": ["0 0.5 1", "0, 0.5, 1"]
+  },
+  "ColorList": {
+    "format": "至少两个 CSS 颜色，按括号外的英文逗号分隔；rgb()/hsl() 内的逗号不拆开，不按空白分隔颜色。",
+    "examples": ["red,blue", "rgb(255,0,0),blue"]
+  },
+  "TextDecoration": {
+    "format": "空白或逗号分隔装饰名称，不混用分隔符；忽略首尾空白和大小写，支持连字符。规范化后不可重复，NONE 必须单独使用。",
+    "examples": ["none", "underline line-through", "UNDERLINE,LINE_THROUGH"]
+  },
+  "BoxShadow": {
+    "format": "none、独立 ELEVATION_n，或 offsetX offsetY [blurRadius [spreadRadius]] [颜色] [模糊模式]；偏移后按数字出现顺序取半径，颜色和模式可穿插且各至多一个。颜色默认黑色，模式默认 NORMAL，半径默认 0；blurRadius 非负，spreadRadius 可负，数值须有限。0 2 red 4 等价 0 2 4 red。多阴影用括号外逗号分隔，NONE / ELEVATION_n 不可与其他项混写。支持 elevation-2 等别名；Skia INNER 不是 CSS inset。",
+    "examples": ["0 2 red 4", "none", "elevation-2", "0 2 4 -1 #00000080 normal"]
+  },
+  "TextShadow": {
+    "format": "none 或 offsetX offsetY [blurSigma] [颜色]；偏移之后颜色与 blurSigma 顺序不限且各至多一个。颜色默认黑色，sigma 默认 0，须有限且非负，偏移须有限。blurSigma 与盒阴影 blurRadius 含义不同。多阴影用括号外逗号分隔，NONE 必须独立使用；不支持 ELEVATION_n 或盒阴影模式。",
+    "examples": ["0 2 red 4", "none", "1 2 3 #00000080"]
+  },
+  "FontFeatureList": {
+    "format": "NONE 或空白分隔的 OpenType 四字符特性标签；仅特殊值 NONE 忽略大小写且必须独立使用。标签本身保留大小写，不做枚举别名转换；完整标签语法由 Snapshot parser 检查。",
+    "examples": ["none", "kern -liga", "liga[0:5]=0"]
+  }
+}

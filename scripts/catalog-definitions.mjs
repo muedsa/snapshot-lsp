@@ -1,4 +1,5 @@
 import valueTypes from '../src/value-types.json' with { type: 'json' };
+import attributeFormats from '../src/attribute-formats.json' with { type: 'json' };
 
 // 保留 CommonAttrDefine 和本地 copyWith 引用的语义，避免别名回落成普通字符串。
 export function declarations(source, common = new Map()) {
@@ -27,11 +28,27 @@ export function declarations(source, common = new Map()) {
           : shortType === 'Enum'
             ? block.match(/(\w+)::valueOf/)?.[1]
             : shortType;
+    const syntax =
+      shortType === 'Alignment'
+        ? 'BoxAlignment'
+        : shortType === 'String' && value === 'fontFamily'
+          ? 'FontFamily'
+          : shortType;
+    // 仅显式 normalizer 或专用内置枚举定义开启别名；valueInfo 本身不改变自定义输入语义。
+    const enumAliases =
+      /EnumAttributeSyntax::normalize/.test(block) ||
+      (shortType === 'String' && /normalize\s*=/.test(block) && /\.trim\(\)\.lowercase\(/.test(block)) ||
+      (shortType !== 'Enum' && shortType !== 'String' && valueType && Object.hasOwn(valueTypes, valueType));
+    const choices = block.match(/AttributeValueInfo\.(?:enumNames|choices)\(listOf\(([^)]*)\)\)/)?.[1];
+    const values = choices && [...choices.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
     result.set(name, {
       name: value,
       kind: kindOf(type),
       required: type.startsWith('Required'),
       ...(valueType && Object.hasOwn(valueTypes, valueType) ? { valueType } : {}),
+      ...(Object.hasOwn(attributeFormats, syntax) ? { syntax } : {}),
+      ...(enumAliases ? { enumAliases: true } : {}),
+      ...(values?.length ? { values } : {}),
     });
   }
   return result;

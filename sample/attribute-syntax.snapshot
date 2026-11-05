@@ -1,0 +1,27 @@
+<!-- 需要包含 2026-11-05 属性语法变更的 Snapshot parser；历史版本不支持全部简写。 -->
+<Snapshot type=" PNG " debug=" FALSE ">
+  <Container padding="8 16" margin="1 2 3 4" alignment="top-left"
+    border="2 rgb(255 0 0 / 50%)" borderLeft="none" borderRadius="12 / 6"
+    gradientType="linear" gradientBegin="-1 0" gradientEnd="1,0"
+    gradientColors="rgb(255,0,0),green,blue" gradientStops="0 .5 1"
+    foregroundBorder="2 solid #33669980" foregroundBorderRadiusTopLeft="(12,6)"
+    boxShadow="0 2 red 4,1 3 2 -1 #00000080 normal"
+    foregroundBoxShadow="elevation-2" transform="translate(12,8) rotate(30deg) scale(1.2)">
+    <Column mainAxisAlignment="space-between" crossAxisAlignment="center">
+      <!-- 旧四值元组仍按左、上、右、下；(1,2,3,4) 等价新 2 3 4 1。 -->
+      <Padding padding="(1,2,3,4)">
+        <Text fontFamily="Arial, Noto Sans" strutFontFamily="Arial, Noto Sans"
+          fontStyle="bold-italic" decoration="underline line-through"
+          textShadow="0 2 red 4" softWrap subpixel=" true " fontFeatures="kern -liga">属性简写</Text>
+      </Padding>
+      <Transform matrix="rotate(0.5rad) scale(2 3)" origin="4 -2" alignment="(0 0)">
+        <ClipRRect borderRadiusBottomRight="1.2e1 / 6.">
+          <SizedBox width="20" height="10"/>
+        </ClipRRect>
+      </Transform>
+      <ClipPath path="M0 0 L20 0 L10 10 Z" fit="contain" fillRule="even-odd" clipBehavior="anti-alias">
+        <SizedBox width="20" height="10"/>
+      </ClipPath>
+    </Column>
+  </Container>
+</Snapshot>

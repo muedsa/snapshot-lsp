@@ -1,15 +1,21 @@
 import generated from './catalog.generated.json' with { type: 'json' };
 import valueTypes from './value-types.json' with { type: 'json' };
+import attributeFormats from './attribute-formats.json' with { type: 'json' };
 import { own } from './lookup.js';
 
 export type ValueKind = 'string' | 'color' | 'boolean' | 'integer' | 'number';
 export type ValueType = keyof typeof valueTypes;
+export type AttributeSyntax = keyof typeof attributeFormats;
 export interface AttributeSpec {
   kind: ValueKind;
   required?: boolean;
   /** Parser 属性类型对应的值域，别名共享相同的枚举与特殊语法。 */
   valueType?: ValueType;
   values?: readonly string[];
+  /** 复合格式的静态语法；不将格式内部的关键字当成整个值的候选限制。 */
+  syntax?: AttributeSyntax;
+  /** 显式启用内置枚举的 trim、大小写及连字符别名；自定义候选默认区分大小写。 */
+  enumAliases?: boolean;
 }
 export interface TagSpec {
   mode: 'none' | 'single' | 'multiple';
@@ -28,10 +34,6 @@ function valuesFor(attr: AttributeSpec): readonly string[] | undefined {
 }
 for (const spec of Object.values(tags))
   for (const attr of Object.values(spec.attributes)) attr.values = valuesFor(attr);
-
-tags.ClipPath.attributes.fit.values = ['FILL', 'CONTAIN'];
-tags.ClipPath.attributes.fillRule.values = ['NON_ZERO', 'EVEN_ODD'];
-tags.Snapshot.attributes.type.values = ['png', 'jpg', 'webp'];
 
 /** 允许宿主按需扩展/覆盖标签，实例之间不共享可变目录。 */
 export function createCatalog(overrides: Record<string, TagSpec> = {}): Record<string, TagSpec> {

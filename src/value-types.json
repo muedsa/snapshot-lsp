@@ -68,5 +68,6 @@
   "PaintStrokeCap": ["BUTT", "ROUND", "SQUARE"],
   "PaintStrokeJoin": ["MITER", "ROUND", "BEVEL"],
   "FontStyle": ["NORMAL", "BOLD", "ITALIC", "BOLD_ITALIC"],
-  "DecorationLineStyle": ["SOLID", "DOUBLE", "DOTTED", "DASHED", "WAVY"]
+  "DecorationLineStyle": ["SOLID", "DOUBLE", "DOTTED", "DASHED", "WAVY"],
+  "TextDecoration": ["NONE", "UNDERLINE", "OVERLINE", "LINE_THROUGH"]
 }

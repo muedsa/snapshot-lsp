@@ -1,8 +1,9 @@
 import type { CompletionItem, Diagnostic, Hover, Position, Range, TextEdit } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { createCatalog, type TagSpec } from './catalog.js';
+import { createCatalog, type AttributeSpec, type TagSpec } from './catalog.js';
 import { parseDocument, type ParseResult } from './parser.js';
 import { own } from './lookup.js';
+import { attributeFormat, normalizeEnum, syntaxOf, valueCandidates, valueMatches } from './attribute-values.js';
 
 interface Analysis {
   text: string;
@@ -106,8 +107,26 @@ export class SnapshotLanguageService {
       (a) => a.valueStart !== undefined && a.valueStart <= offset && offset <= (a.valueEnd ?? -1),
     );
     if (valueAttr) {
-      const valueStart = valueAttr.valueStart!,
+      const definition = own(spec.attributes, valueAttr.name);
+      if (!definition) return [];
+      let valueStart = valueAttr.valueStart!,
         valueEnd = valueAttr.valueEnd!;
+      let candidates = valueCandidates(definition);
+      if (syntaxOf(definition) === 'TextDecoration') {
+        const tokens = [...text.slice(valueStart, valueEnd).matchAll(/[^,\s]+/g)].map((match) => ({
+          value: match[0],
+          start: valueStart + match.index,
+          end: valueStart + match.index + match[0].length,
+        }));
+        const active = tokens.find((token) => token.start <= offset && offset <= token.end);
+        const used = new Set(tokens.filter((token) => token !== active).map((token) => normalizeEnum(token.value)));
+        if (used.has('NONE')) return [];
+        candidates = candidates.filter(
+          (value) => !used.has(normalizeEnum(value)) && (used.size === 0 || value !== 'NONE'),
+        );
+        valueStart = active?.start ?? offset;
+        valueEnd = active?.end ?? offset;
+      }
       const line = document.positionAt(offset).line;
       const editStart = Math.max(valueStart, document.offsetAt({ line, character: 0 }));
       let editEnd = Math.min(valueEnd, document.offsetAt({ line: line + 1, character: 0 }));
@@ -120,13 +139,17 @@ export class SnapshotLanguageService {
         additionalTextEdits.push({ range: replaceRange(document, valueStart, editStart), newText: '' });
       if (editEnd < valueEnd)
         additionalTextEdits.push({ range: replaceRange(document, editEnd, valueEnd), newText: '' });
-      return (own(spec.attributes, valueAttr.name)?.values ?? [])
-        .filter((value) => value.startsWith(multiline ? prefix.trimStart() : prefix))
+      return candidates
+        .filter((value) => valueMatches(definition, value, multiline ? prefix.trimStart() : prefix))
         .map((value) => ({
           label: value,
           kind: 12,
-          textEdit: { range: replaceRange(document, editStart, editEnd), newText: value },
+          textEdit: {
+            range: replaceRange(document, editStart, editEnd),
+            newText: /\s/.test(value) && !['"', "'"].includes(text[valueAttr.valueStart! - 1]) ? `"${value}"` : value,
+          },
           ...(additionalTextEdits.length ? { additionalTextEdits } : {}),
+          ...completionDocumentation(definition),
         }));
     }
     const editingName = tag.attributes.find((attr) => attr.start <= offset && offset <= attr.end);
@@ -151,8 +174,9 @@ export class SnapshotLanguageService {
         insertTextFormat: useSnippet ? 2 : 1,
         textEdit: {
           range: replaceRange(document, editingName?.start ?? offset, editingName?.end ?? offset),
-          newText: hasAssignment ? name : useSnippet ? `${name}="\${1}"` : `${name}=""`,
+          newText: hasAssignment ? name : attributeTemplate(name, attr, useSnippet),
         },
+        ...completionDocumentation(attr),
       }));
   }
 
@@ -178,13 +202,37 @@ export class SnapshotLanguageService {
         return {
           contents: {
             kind: 'markdown',
-            value: `**${tag.name}.${attr.name}**\n\n类型：${spec.kind}${spec.required ? '，必填' : ''}${spec.values ? `\n\n可选值：${spec.values.join('、')}` : ''}`,
+            value: `**${tag.name}.${attr.name}**\n\n类型：${spec.kind}${spec.required ? '，必填' : ''}${spec.values ? `\n\n${syntaxOf(spec) === 'TextDecoration' ? '装饰项' : '可选值'}：${spec.values.join('、')}` : ''}${formatDocumentation(spec)}`,
           },
           range: replaceRange(document, attr.start, attr.end),
         };
     }
     return null;
   }
+}
+
+function formatDocumentation(attr: AttributeSpec): string {
+  const info = attributeFormat(attr);
+  return info
+    ? `\n\n${info.format}${info.examples.length ? `\n\n示例：${info.examples.map((example) => `\`${example}\``).join('、')}` : ''}`
+    : '';
+}
+
+function completionDocumentation(attr: AttributeSpec): Pick<CompletionItem, 'documentation'> {
+  const value = formatDocumentation(attr).trim();
+  return value ? { documentation: { kind: 'markdown', value } } : {};
+}
+
+function attributeTemplate(name: string, attr: AttributeSpec, snippet: boolean): string {
+  const syntax = syntaxOf(attr);
+  const example =
+    attr.kind === 'boolean'
+      ? 'true'
+      : syntax && syntax !== 'BoxAlignment' && syntax !== 'TextDecoration'
+        ? (attributeFormat(attr)?.examples[0] ?? '')
+        : '';
+  const escaped = example.replace(/[\\$}]/g, '\\$&');
+  return `${name}="${snippet ? (example ? `\${1:${escaped}}` : '\${1}') : example}"`;
 }
 
 function replaceRange(document: TextDocument, start: number, end: number): Range {
