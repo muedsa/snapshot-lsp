@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { declarations } from '../scripts/catalog-definitions.mjs';
 import generated from '../src/catalog.generated.json' with { type: 'json' };
 import valueTypes from '../src/value-types.json' with { type: 'json' };
+import attributeFormats from '../src/attribute-formats.json' with { type: 'json' };
 import { SnapshotLanguageService } from '../dist/index.js';
 
 test('目录生成器保留公共、本地和具名 copyWith 的属性类型', () => {
@@ -64,4 +65,51 @@ test('自定义属性可复用值域且实例间不共享枚举数组', () => {
   first.catalog.Custom.attributes.mode.values.push('CUSTOM');
   assert.ok(!second.catalog.Custom.attributes.mode.values.includes('CUSTOM'));
   assert.equal(overrides.Custom.attributes.mode.values, undefined);
+});
+
+test('生成器保留复合语法、受限字符串候选与显式枚举 normalizer', () => {
+  const common = declarations(`
+    val PADDING = EdgeInsetsAttrDefine("padding")
+    val BORDER = NullableBorderSideAttrDefine("border")
+    val FONT = NullableStringAttrDefine("fontFamily")
+  `);
+  const aliases = declarations(
+    `
+    val MARGIN = CommonAttrDefine.PADDING.copyWith("margin")
+    val SIDE = CommonAttrDefine.BORDER.copyWith("foregroundBorderLeft")
+    val STRUT = CommonAttrDefine.FONT.copyWith("strutFontFamily")
+    val FIT = StringAttrDefine("fit", "FILL", AttributeValueInfo.enumNames(listOf("FILL", "CONTAIN")), EnumAttributeSyntax::normalize) { _, _ -> }
+    val CUSTOM = StringAttrDefine("custom", "A", AttributeValueInfo.enumNames(listOf("A", "B"))) { _, _ -> }
+    val MODE = NullableEnumAttrDefine("mode", AttributeValueInfo.enum(PaintMode.entries), EnumAttributeSyntax::normalize, PaintMode::valueOf)
+    val RAW_MODE = NullableEnumAttrDefine("rawMode", AttributeValueInfo.enum(PaintMode.entries), PaintMode::valueOf)
+  `,
+    common,
+  );
+  assert.equal(aliases.get('MARGIN').syntax, 'EdgeInsets');
+  assert.equal(aliases.get('SIDE').syntax, 'BorderSide');
+  assert.equal(aliases.get('STRUT').syntax, 'FontFamily');
+  assert.deepEqual(aliases.get('FIT').values, ['FILL', 'CONTAIN']);
+  assert.equal(aliases.get('FIT').enumAliases, true);
+  assert.equal(aliases.get('CUSTOM').enumAliases, undefined);
+  assert.equal(aliases.get('MODE').enumAliases, true);
+  assert.equal(aliases.get('RAW_MODE').enumAliases, undefined);
+});
+
+test('复合语法元数据覆盖全部格式、别名和 ClipPath 的受限候选', () => {
+  const syntaxes = new Set();
+  for (const tag of Object.values(generated))
+    for (const attr of Object.values(tag.attributes)) {
+      if (attr.syntax) {
+        assert.ok(Object.hasOwn(attributeFormats, attr.syntax));
+        syntaxes.add(attr.syntax);
+      }
+    }
+  assert.deepEqual([...syntaxes].sort(), Object.keys(attributeFormats).sort());
+  assert.deepEqual(generated.ClipPath.attributes.fit.values, ['FILL', 'CONTAIN']);
+  assert.deepEqual(generated.ClipPath.attributes.fillRule.values, ['NON_ZERO', 'EVEN_ODD']);
+  assert.deepEqual(generated.Snapshot.attributes.type.values, ['png', 'jpg', 'webp']);
+  assert.equal(generated.Text.attributes.strutFontFamily.syntax, 'FontFamily');
+  assert.equal(generated.Container.attributes.foregroundBoxShadow.syntax, 'BoxShadow');
+  assert.equal(generated.Container.attributes.foregroundBorderRadius.syntax, 'Radius');
+  assert.equal(generated.Container.attributes.foregroundGradientStops.syntax, 'FloatList');
 });

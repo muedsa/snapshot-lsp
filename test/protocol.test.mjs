@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import packageJson from '../package.json' with { type: 'json' };
 
@@ -56,6 +57,60 @@ function startServer(t) {
   };
   return { request, send, waitFor };
 }
+
+test('stdio 支持新版属性语法、悬停说明及严格布尔诊断的增量修正', async (t) => {
+  const { request, send, waitFor } = startServer(t);
+  await request('initialize', { processId: process.pid, rootUri: null, capabilities: {} });
+  send({ jsonrpc: '2.0', method: 'initialized', params: {} });
+  const uri = 'file:///attribute-syntax.snapshot';
+  const text = readFileSync(new URL('../sample/attribute-syntax.snapshot', import.meta.url), 'utf8');
+  const diagnostic = (version) =>
+    waitFor(
+      (m) => m.method === 'textDocument/publishDiagnostics' && m.params.uri === uri && m.params.version === version,
+    );
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didOpen',
+    params: {
+      textDocument: { uri, languageId: 'snapshot', version: 1, text },
+    },
+  });
+  assert.deepEqual((await diagnostic(1)).params.diagnostics, []);
+  const document = TextDocument.create(uri, 'snapshot', 1, text);
+  const hover = await request('textDocument/hover', {
+    textDocument: { uri },
+    position: document.positionAt(text.indexOf('padding') + 2),
+  });
+  assert.match(hover.result.contents.value, /旧.*左.*上.*右.*下/);
+  const updated = text.replace(' FALSE ', 'yes');
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didChange',
+    params: {
+      textDocument: { uri, version: 2 },
+      contentChanges: [{ text: updated }],
+    },
+  });
+  const error = (await diagnostic(2)).params.diagnostics.find((item) => item.code === 'invalid-boolean');
+  assert.equal(error.severity, 1);
+  const response = await request('textDocument/completion', {
+    textDocument: { uri },
+    position: error.range.start,
+  });
+  const correction = response.result.find((item) => item.label === 'false');
+  assert.ok(correction);
+  send({
+    jsonrpc: '2.0',
+    method: 'textDocument/didChange',
+    params: {
+      textDocument: { uri, version: 3 },
+      contentChanges: [{ range: correction.textEdit.range, text: correction.textEdit.newText }],
+    },
+  });
+  assert.deepEqual((await diagnostic(3)).params.diagnostics, []);
+  await request('shutdown', null);
+  send({ jsonrpc: '2.0', method: 'exit' });
+});
 
 test('Node stdio LSP 握手、诊断和补全', async (t) => {
   const { request, send, waitFor } = startServer(t);

@@ -3,6 +3,14 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TagSpec } from './catalog.js';
 import { isCssColor } from './css-color.js';
 import { own } from './lookup.js';
+import {
+  attributeFormat,
+  normalizeEnum,
+  numericList,
+  splitOutside,
+  syntaxOf,
+  validSyntax,
+} from './attribute-values.js';
 
 export interface AttributeNode {
   name: string;
@@ -292,7 +300,9 @@ function validateAttributes(
     if (attr.value === undefined) {
       if (
         !node.incomplete &&
+        definition.kind !== 'boolean' &&
         (definition.required ||
+          syntaxOf(definition) !== undefined ||
           node.name === 'ClipPath' ||
           (['Image', 'Emoji'].includes(node.name) && ['url', 'dataUri'].includes(attr.name)))
       )
@@ -308,18 +318,55 @@ function validateAttributes(
       issue(at, until, 'invalid-path', 'SVG 路径不能为空或包含 NUL 字符');
     if (node.name === 'ClipPath' && attr.name === 'viewBox' && !validViewBox(value))
       issue(at, until, 'invalid-viewbox', 'viewBox 需要有限的 minX minY width height，且宽高必须大于 0');
-    if (definition.kind === 'boolean' && !['true', 'false'].includes(value.toLowerCase()))
-      issue(at, until, 'invalid-boolean', '建议使用 true 或 false；Snapshot 会把其他值解析为 false', 2);
+    if (definition.kind === 'boolean' && !['true', 'false'].includes(value.trim().toLowerCase()))
+      issue(
+        at,
+        until,
+        'invalid-boolean',
+        '布尔属性需要 true 或 false（忽略首尾空白和大小写）；裸属性表示 true，显式空值或其他文本无效',
+      );
     if (definition.kind === 'integer' && !/^[+-]?\d+$/.test(value)) issue(at, until, 'invalid-integer', '这里需要整数');
     if (definition.kind === 'number' && !/^[+-]?(?:(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|Infinity|NaN)$/.test(value))
       issue(at, until, 'invalid-number', '这里需要数字');
-    if (
+    const syntax = syntaxOf(definition);
+    const choice = definition.enumAliases ? normalizeEnum(value) : value;
+    const inValues = definition.values?.some(
+      (candidate) => (definition.enumAliases ? normalizeEnum(candidate) : candidate) === choice,
+    );
+    if (syntax && !(syntax === 'BoxAlignment' && inValues) && !validSyntax(value, syntax))
+      issue(at, until, 'invalid-value', attributeFormat(definition)!.format);
+    else if (
       definition.kind !== 'boolean' &&
       definition.values?.length &&
-      !definition.values.includes(value) &&
-      !(definition.valueType === 'BoxAlignment' && /^\([+-]?(?:\d*\.)?\d+,[+-]?(?:\d*\.)?\d+\)$/.test(value))
+      !inValues &&
+      syntax !== 'BoxAlignment' &&
+      syntax !== 'TextDecoration'
     )
       issue(at, until, 'invalid-value', `可选值：${definition.values.join('、')}`);
+  }
+  // 渐变前景与背景共用语法；完整值可静态核对数量、范围和升序。
+  for (const prefix of ['', 'foreground']) {
+    const stopsName = prefix ? 'foregroundGradientStops' : 'gradientStops';
+    const colorsName = prefix ? 'foregroundGradientColors' : 'gradientColors';
+    const stops = node.attributes.find((attr) => attr.name === stopsName);
+    if (stops?.value === undefined || own(spec.attributes, stopsName)?.syntax !== 'FloatList') continue;
+    const numbers = numericList(stops.value);
+    if (!numbers) continue;
+    const colors = node.attributes.find((attr) => attr.name === colorsName);
+    const count =
+      colors?.value !== undefined && own(spec.attributes, colorsName)?.syntax === 'ColorList'
+        ? splitOutside(colors.value, ',')?.length
+        : undefined;
+    if (
+      numbers.some((number, index) => number < 0 || number > 1 || (index > 0 && number < numbers[index - 1])) ||
+      (count !== undefined && count !== numbers.length)
+    )
+      issue(
+        stops.valueStart!,
+        stops.valueEnd!,
+        'invalid-value',
+        '渐变色标需要在 0..1 内、升序排列，且数量与渐变颜色一致',
+      );
   }
   if (!node.incomplete)
     for (const [name, definition] of Object.entries(spec.attributes))
